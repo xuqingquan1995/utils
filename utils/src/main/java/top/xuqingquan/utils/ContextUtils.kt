@@ -13,12 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import java.io.Serializable
 
-inline val Context.defaultSharedPreferences: SharedPreferences
-    get() = getSharedPreferences("${packageName}_preferences", Context.MODE_PRIVATE)
-
-inline val Fragment.defaultSharedPreferences: SharedPreferences?
-    get() = activity?.getSharedPreferences("${activity?.packageName}_preferences", Context.MODE_PRIVATE)
-
 inline val Context.ctx: Context
     get() = this
 
