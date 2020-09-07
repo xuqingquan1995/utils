@@ -60,16 +60,23 @@ fun getCacheFilePath(context: Context): String {
  * 获得文件mime
  */
 fun getMIMEType(f: File): String {
-    /* 依扩展名的类型决定MimeType */
     return when (f.extension) {
-        "pdf" -> "application/pdf"//
-        "m4a", "mp3", "mid", "xmf", "ogg", "wav" -> "audio/*"
-        "3gp", "mp4" -> "video/*"
-        "jpg", "gif", "png", "jpeg", "bmp" -> "image/*"
+        "pdf" -> "application/pdf"
         "apk" -> "application/vnd.android.package-archive"
-        "pptx", "ppt" -> "application/vnd.ms-powerpoint"
-        "docx", "doc" -> "application/vnd.ms-word"
-        "xlsx", "xls" -> "application/vnd.ms-excel"
+        "bmp", "gif", "jpeg", "jpg", "png" -> "image/*"
+        "3gp", "asf", "avi", "m4u", "m4v", "mov", "mp4", "mpe", "mpeg", "mpg", "mpg4" -> "video/*"
+        "m3u", "m4a", "m4b", "m4p", "mp2", "mp3", "mpga", "ogg", "rmvb", "wav", "wma", "wmv" -> "audio/*"
+        "c", "conf", "cpp", "h", "java", "log", "prop", "rc", "sh", "txt", "text", "xml" -> "text/plain"
+        "htm", "html" -> "text/html"
+        "pps", "ppt", "pptx" -> "application/vnd.ms-powerpoint"
+        "doc", "docx" -> "application/msword"
+        "xls", "xlsx" -> "application/vnd.ms-excel"
+        "tar" -> "application/x-tar"
+        "rar" -> "application/vnd.rar"
+        "tgz" -> "application/x-compressed"
+        "z" -> "application/x-compress"
+        "zip" -> "application/zip"
+        "7z" -> "application/x-7z-compressed"
         else -> "*/*"
     }
 }
