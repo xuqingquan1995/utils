@@ -1,13 +1,16 @@
 @file:JvmName("FileUtils")
+
 package top.xuqingquan.utils
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.os.StatFs
 import android.text.format.DateUtils
 import java.io.Closeable
 import java.io.File
+import java.io.FileOutputStream
 import java.util.*
 
 /**
@@ -57,12 +60,8 @@ fun getCacheFilePath(context: Context): String {
  * 获得文件mime
  */
 fun getMIMEType(f: File): String {
-    val type: String
-    val fName = f.name
-    /* 取得扩展名 */
-    val end = fName.substring(fName.lastIndexOf(".") + 1).toLowerCase(Locale.getDefault())
     /* 依扩展名的类型决定MimeType */
-    type = when (end) {
+    return when (f.extension) {
         "pdf" -> "application/pdf"//
         "m4a", "mp3", "mid", "xmf", "ogg", "wav" -> "audio/*"
         "3gp", "mp4" -> "video/*"
@@ -73,7 +72,6 @@ fun getMIMEType(f: File): String {
         "xlsx", "xls" -> "application/vnd.ms-excel"
         else -> "*/*"
     }
-    return type
 }
 
 /**
@@ -118,9 +116,14 @@ fun uriToPath(context: Context?, uris: Array<Uri>?): Array<String?>? {
     }
     try {
         val paths = arrayOfNulls<String>(uris.size)
-        var i = 0
-        for (mUri in uris) {
-            paths[i++] = getPath(context.applicationContext, mUri)
+        val aboveN = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+        uris.forEachIndexed { index, uri ->
+            paths[index] = if (aboveN) {
+                getFilePathFromUri(context.applicationContext, uri)
+            } else {
+                getPath(context.applicationContext, uri)
+            }
+
         }
         return paths
     } catch (throwable: Throwable) {
@@ -128,6 +131,40 @@ fun uriToPath(context: Context?, uris: Array<Uri>?): Array<String?>? {
     }
 
     return null
+}
+
+fun getFileNameFromUri(uri: Uri): String? {
+    val path = uri.path ?: return null
+    val cut = path.lastIndexOf("/")
+    if (cut != -1) {
+        return path.substring(cut + 1)
+    }
+    return null
+}
+
+fun copyFileFromUri(context: Context, srcUri: Uri, dstFile: File) {
+    val inputStream = context.contentResolver.openInputStream(srcUri) ?: return
+    val outputStream = FileOutputStream(dstFile)
+    val BUFFER_SIZE = 1024 * 2
+    val buffer = ByteArray(BUFFER_SIZE)
+    try {
+        var n: Int
+        while (inputStream.read(buffer, 0, BUFFER_SIZE).also { n = it } != -1) {
+            outputStream.write(buffer, 0, n)
+        }
+        outputStream.flush()
+    } finally {
+        outputStream.close()
+        inputStream.close()
+    }
+}
+
+fun getFilePathFromUri(context: Context, uri: Uri): String? {
+    val rootDir = context.filesDir
+    val fileName = getFileNameFromUri(uri) ?: return null
+    val copyFile = File(rootDir, fileName)
+    copyFileFromUri(context, uri, copyFile)
+    return copyFile.absolutePath
 }
 
 /**
@@ -165,6 +202,7 @@ fun getTotalStorage(context: Context): Long {
 }
 
 private val units = arrayOf("B", "KB", "MB", "GB", "TB")
+
 /**
  * 单位转换
  */
