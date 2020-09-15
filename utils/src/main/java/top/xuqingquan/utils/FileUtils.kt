@@ -123,6 +123,7 @@ fun getUriFromFile(context: Context, file: File): Uri {
         Uri.fromFile(file)
     }
 }
+
 /**
  * 将一系列uri转为String的路径
  */
@@ -170,8 +171,8 @@ fun copyFileFromUri(context: Context, srcUri: Uri, dstFile: File) {
         }
         outputStream.flush()
     } finally {
-        outputStream.close()
-        inputStream.close()
+        closeIO(outputStream)
+        closeIO(inputStream)
     }
 }
 
