@@ -113,7 +113,16 @@ fun clearCacheFolder(dir: File?, numDays: Int): Int {
     return deletedFiles
 }
 
-
+/**
+ * 获取文件uri
+ */
+fun getUriFromFile(context: Context, file: File): Uri {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        ScaffoldFileProvider.getUriForFile(context, context.packageName + ".ScaffoldFileProvider", file)
+    } else {
+        Uri.fromFile(file)
+    }
+}
 /**
  * 将一系列uri转为String的路径
  */

@@ -5,4 +5,16 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <application>
+        <!-- Android 7.0 之后用到FileProvider -->
+        <provider
+            android:name="top.xuqingquan.utils.ScaffoldFileProvider"
+            android:authorities="${applicationId}.ScaffoldFileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/scaffold_filepaths" />
+        </provider>
+    </application>
 </manifest>
