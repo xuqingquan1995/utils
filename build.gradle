@@ -7,10 +7,11 @@ buildscript {
     ext.test = '1.0.2'
     ext.espresso = '3.0.2'
     ext.junit = '4.13'
-    ext.constraint = '1.1.3'
+    ext.constraint = '2.0.1'
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.0.1"
@@ -26,6 +27,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
 }
 
