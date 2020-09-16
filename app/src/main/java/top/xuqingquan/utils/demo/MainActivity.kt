@@ -71,35 +71,37 @@ class MainActivity : AppCompatActivity() {
                 choosePhoto()
             }
         } else if (requestCode == 0x2 && data?.data != null) {
-            Timber.d("data===>${data.data!!}")
-            val path = getPath(this, data.data!!) ?: ""
-            Timber.d("path=>${path}")
-            val file = File(path)
-            val uri = Uri.fromFile(file)
-//            val fd = contentResolver.openFileDescriptor(uri, "rw")
-//            val path2 = uriToPath(this, uri)
-//            Timber.d("path2=${path2}")
-//            val file2 = File(path2)
-//            Glide.with(this).load(file2).into(iv)
-            val cursor=contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Images.Media._ID),MediaStore.Images.Media.DATA + "=? ",
-            arrayOf(uri.path),null)
-            if (cursor==null){
-                Timber.d("cursor==null")
-                return
+            try {
+                Timber.d("data===>${data.data!!}")
+                val path = getPath(this, data.data!!) ?: ""
+                Timber.d("path=>${path}")
+                val file = File(path)
+                val uri = Uri.fromFile(file)
+                Timber.d("uri=>${uri}")
+                val path2=uriToPath(this,uri)
+                Timber.d("path2=>${path2}")
+                Glide.with(this).load(path2).into(iv)
+//                val cursor=contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Images.Media._ID),MediaStore.Images.Media.DATA + "=? ",
+//                arrayOf(uri.path),null)
+//                if (cursor==null){
+//                    Timber.d("cursor==null")
+//                    return
+//                }
+//                if (cursor.moveToFirst()){
+//                    val id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID))
+//                    val baseUri = Uri.parse("content://media/external/images/media")
+//                    val uri2=Uri.withAppendedPath(baseUri, "" + id)
+//                    Timber.d("uri2=>${uri2}")
+//                    val path2 = uriToPath(this, uri)
+//                    Timber.d("path2=${path2}")
+//                    val file2 = File(path2)
+//                    Glide.with(this).load(file2).into(iv)
+//                }else{
+//                    Timber.d("cursor.moveToFirst()")
+//                }
+//                cursor.close()
+            } catch (e: Throwable) {
             }
-            if (cursor.moveToFirst()){
-                val id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID))
-                val baseUri = Uri.parse("content://media/external/images/media")
-                val uri2=Uri.withAppendedPath(baseUri, "" + id)
-                Timber.d("uri2=>${uri2}")
-                val path2 = uriToPath(this, uri)
-                Timber.d("path2=${path2}")
-                val file2 = File(path2)
-                Glide.with(this).load(file2).into(iv)
-            }else{
-                Timber.d("cursor.moveToFirst()")
-            }
-            cursor.close()
         }
     }
     /*
