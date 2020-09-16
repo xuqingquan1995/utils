@@ -10,6 +10,7 @@ import android.os.StatFs
 import android.text.format.DateUtils
 import java.io.Closeable
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.*
 
@@ -118,7 +119,9 @@ fun clearCacheFolder(dir: File?, numDays: Int): Int {
  */
 fun getUriFromFile(context: Context, file: File): Uri {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        ScaffoldFileProvider.getUriForFile(context, context.packageName + ".ScaffoldFileProvider", file)
+        ScaffoldFileProvider.getUriForFile(
+            context, "${context.packageName}.ScaffoldFileProvider", file
+        )
     } else {
         Uri.fromFile(file)
     }
@@ -150,6 +153,26 @@ fun uriToPath(context: Context?, uris: Array<Uri>?): Array<String?>? {
     return null
 }
 
+/**
+ * 单个uri转文件路径
+ */
+fun uriToPath(context: Context?, uri: Uri?): String? {
+    if (context == null || uri == null) {
+        return null
+    }
+    try {
+        val aboveN = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+        return if (aboveN) {
+            getFilePathFromUri(context.applicationContext, uri)
+        } else {
+            getPath(context.applicationContext, uri)
+        }
+    } catch (t: Throwable) {
+        Timber.e(t)
+    }
+    return null
+}
+
 fun getFileNameFromUri(uri: Uri): String? {
     val path = uri.path ?: return null
     val cut = path.lastIndexOf("/")
@@ -160,7 +183,8 @@ fun getFileNameFromUri(uri: Uri): String? {
 }
 
 fun copyFileFromUri(context: Context, srcUri: Uri, dstFile: File) {
-    val inputStream = context.contentResolver.openInputStream(srcUri) ?: return
+    val pfd = context.contentResolver.openFileDescriptor(srcUri, "r") ?: return
+    val inputStream = FileInputStream(pfd.fileDescriptor)
     val outputStream = FileOutputStream(dstFile)
     val BUFFER_SIZE = 1024 * 2
     val buffer = ByteArray(BUFFER_SIZE)
@@ -177,7 +201,7 @@ fun copyFileFromUri(context: Context, srcUri: Uri, dstFile: File) {
 }
 
 fun getFilePathFromUri(context: Context, uri: Uri): String? {
-    val rootDir = context.filesDir
+    val rootDir = context.cacheDir
     val fileName = getFileNameFromUri(uri) ?: return null
     val copyFile = File(rootDir, fileName)
     copyFileFromUri(context, uri, copyFile)
