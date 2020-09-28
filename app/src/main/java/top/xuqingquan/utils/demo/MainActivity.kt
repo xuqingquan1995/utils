@@ -1,7 +1,6 @@
 package top.xuqingquan.utils.demo
 
 import android.Manifest
-import android.content.ContentUris
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,10 +9,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
-import top.xuqingquan.utils.Timber
-import top.xuqingquan.utils.getPath
-import top.xuqingquan.utils.hasPermission
-import top.xuqingquan.utils.uriToPath
+import top.xuqingquan.utils.*
 import java.io.File
 
 
@@ -53,6 +49,10 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }
+        Timber.d("versionCode=" + getVersionCode(this))
+        val stringRes =
+            resources.getIdentifier("app_name", "string", packageName)
+        Timber.d("appName=>${getString(stringRes)}")
     }
 
     override fun onRequestPermissionsResult(
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                 val file = File(path)
                 val uri = Uri.fromFile(file)
                 Timber.d("uri=>${uri}")
-                val path2=uriToPath(this,uri)
+                val path2 = uriToPath(this, uri)
                 Timber.d("path2=>${path2}")
                 Glide.with(this).load(path2).into(iv)
 //                val cursor=contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Images.Media._ID),MediaStore.Images.Media.DATA + "=? ",

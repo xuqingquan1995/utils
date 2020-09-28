@@ -3,7 +3,6 @@
 package top.xuqingquan.utils
 
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Build
 
 /**
@@ -30,7 +29,42 @@ fun getVersionCode(context: Context): Long {
             packageInfo.versionCode.toLong()
         }
     } catch (ex: Throwable) {
-        0
+        Timber.w("getVersionCode error")
+        try {
+            val versionCode =
+                ReflectUtils.reflect(context.packageName + ".BuildConfig").field("VERSION_CODE")
+                    .get<Int>()
+            versionCode.toLong()
+        } catch (t: Throwable) {
+            Timber.e(t, "getVersionCode error")
+            0
+        }
+    }
+}
+
+/**
+ * 获取版本名称
+ *
+ * @param context
+ * @return
+ */
+fun getVersionName(context: Context): String {
+    return try {
+        val packageInfo = context.packageManager
+            .getPackageInfo(
+                context.packageName,
+                0
+            )
+
+        packageInfo.versionName
+    } catch (ex: Throwable) {
+        Timber.w("getVersionName error")
+        try {
+            ReflectUtils.reflect(context.packageName + ".BuildConfig").field("VERSION_NAME").get()
+        } catch (t: Throwable) {
+            Timber.e(t, "getVersionName error")
+            "unknown version"
+        }
     }
 }
 
@@ -41,7 +75,15 @@ fun getApplicationName(context: Context): String? {
         val packageManager = context.applicationContext.packageManager
         val applicationInfo = packageManager!!.getApplicationInfo(context.packageName, 0)
         packageManager.getApplicationLabel(applicationInfo).toString()
-    } catch (e: PackageManager.NameNotFoundException) {
-        ""
+    } catch (e: Throwable) {
+        Timber.w("getApplicationName error")
+        try {
+            val stringRes =
+                context.resources.getIdentifier("app_name", "string", context.packageName)
+            context.getString(stringRes)
+        } catch (e: Throwable) {
+            Timber.e("getApplicationName error")
+            ""
+        }
     }
 }
