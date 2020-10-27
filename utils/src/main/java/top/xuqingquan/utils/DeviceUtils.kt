@@ -3,6 +3,7 @@
 package top.xuqingquan.utils
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.provider.Settings
@@ -10,7 +11,6 @@ import android.support.annotation.RequiresPermission
 import android.support.v4.content.ContextCompat
 import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
-import android.view.WindowManager
 
 /**
  * Created by 许清泉 on 2019-04-29 23:28
@@ -18,10 +18,7 @@ import android.view.WindowManager
 
 //获取屏幕相关参数
 fun getDisplayMetrics(context: Context): DisplayMetrics {
-    val displaymetrics = DisplayMetrics()
-    ContextCompat.getSystemService(context, WindowManager::class.java)
-        ?.defaultDisplay?.getMetrics(displaymetrics)
-    return displaymetrics
+    return context.displayMetrics
 }
 
 /**
@@ -47,11 +44,12 @@ fun getScreenWidth(context: Context): Int {
 /**
  * 获取IMEI
  */
+@Suppress("DEPRECATION")
+@SuppressLint("HardwareIds")
 @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
 fun getIMEI(context: Context): String? {
     return if (hasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
         val tel = ContextCompat.getSystemService(context, TelephonyManager::class.java)
-        @Suppress("DEPRECATION")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             tel?.imei
         } else {

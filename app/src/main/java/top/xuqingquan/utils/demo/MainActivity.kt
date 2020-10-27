@@ -53,6 +53,8 @@ class MainActivity : AppCompatActivity() {
         val stringRes =
             resources.getIdentifier("app_name", "string", packageName)
         Timber.d("appName=>${getString(stringRes)}")
+        Timber.d("width=>${getScreenWidth(this)}")
+        Timber.d("height=>${getScreenHeight(this)}")
     }
 
     override fun onRequestPermissionsResult(

@@ -9,6 +9,10 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.provider.Settings;
+import android.support.annotation.ColorInt;
+import android.support.annotation.IntDef;
+import android.support.annotation.IntRange;
+import android.support.v4.view.ViewCompat;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Gravity;
@@ -19,17 +23,10 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import android.support.annotation.ColorInt;
-import android.support.annotation.IntDef;
-import android.support.annotation.IntRange;
-import android.support.v4.view.ViewCompat;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
-import top.xuqingquan.utils.R;
 
 /**
  * Created by 许清泉 on 2019-07-23 20:00
@@ -44,7 +41,7 @@ import top.xuqingquan.utils.R;
  * {@link #showhideBar 控制导航栏和状态栏的显示和隐藏}
  * {@link #setNavigationIconDark 设置导航栏图标是否为暗色}
  */
-@SuppressWarnings({"unused", "WeakerAccess"})
+@SuppressWarnings({"unused", "WeakerAccess", "RedundantSuppression", "deprecation"})
 public class StatusBarUtils {
 
     private final static int STATUSBAR_TYPE_DEFAULT = 0;
@@ -64,7 +61,7 @@ public class StatusBarUtils {
     private static final int DEFAULT_STATUS_BAR_ALPHA = 0;//默认状态栏透明度
     private static final int FAKE_STATUS_BAR_VIEW_ID = R.id.scaffold_fake_status_bar_view;
     private static final int STATUSBARUTILS_NAVIGATION_BAR_VIEW = R.id.scaffold_navigation_bar_view;
-    private static int sStatusbarHeight = -1;
+    private static final int sStatusbarHeight = -1;
     /**
      * 导航栏竖屏高度标识位
      */

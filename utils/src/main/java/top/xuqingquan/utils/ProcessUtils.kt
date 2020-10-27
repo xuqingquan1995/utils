@@ -3,6 +3,7 @@
 package top.xuqingquan.utils
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.ActivityManager.RunningAppProcessInfo
 import android.app.AppOpsManager
@@ -34,6 +35,7 @@ import java.io.FileReader
  *
  * @return the foreground process name
  */
+@SuppressLint("QueryPermissionsNeeded")
 fun getForegroundProcessName(context: Context): String {
     val am = ContextCompat.getSystemService(context, ActivityManager::class.java)
     val pInfo = am?.runningAppProcesses
@@ -47,17 +49,17 @@ fun getForegroundProcessName(context: Context): String {
         }
     }
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-        val pm: PackageManager = context.packageManager
+        val pm = context.packageManager
         val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-        val list = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
-        if (list.size <= 0) {
+        val list = pm?.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        if (list == null || list.size <= 0) {
             Timber.i("getForegroundProcessName: noun of access to usage information.")
             return ""
         }
         try { // Access to usage information.
             val info = pm.getApplicationInfo(context.packageName, 0)
             val aom = ContextCompat.getSystemService(context, AppOpsManager::class.java)
-            if (aom?.checkOpNoThrow(
+            if (aom?.unsafeCheckOpNoThrow(
                     AppOpsManager.OPSTR_GET_USAGE_STATS,
                     info.uid,
                     info.packageName
@@ -66,7 +68,7 @@ fun getForegroundProcessName(context: Context): String {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
             }
-            if (aom?.checkOpNoThrow(
+            if (aom?.unsafeCheckOpNoThrow(
                     AppOpsManager.OPSTR_GET_USAGE_STATS,
                     info.uid,
                     info.packageName
