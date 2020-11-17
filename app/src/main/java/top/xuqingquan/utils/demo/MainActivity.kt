@@ -37,17 +37,18 @@ class MainActivity : AppCompatActivity() {
 //        val decompressStr=String(decompressByteArray)
 //        println("decompressStr===>$decompressStr")
         tv.setOnClickListener {
-            if (hasPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                Timber.d("hasPermission")
-                choosePhoto()
-            } else {
-                Timber.d("requestPermissions")
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    0x1
-                )
-            }
+            toast("${NotchScreenUtil.checkNotchScreen(this)}")
+//            if (hasPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                Timber.d("hasPermission")
+//                choosePhoto()
+//            } else {
+//                Timber.d("requestPermissions")
+//                ActivityCompat.requestPermissions(
+//                    this,
+//                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+//                    0x1
+//                )
+//            }
         }
         Timber.d("versionCode=" + getVersionCode(this))
         val stringRes =
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         Timber.d("appName=>${getString(stringRes)}")
         Timber.d("width=>${getScreenWidth(this)}")
         Timber.d("height=>${getScreenHeight(this)}")
+        Timber.d("statusBarHeight=>"+StatusBarUtils.getStatusbarHeight(this))
     }
 
     override fun onRequestPermissionsResult(

@@ -16,6 +16,7 @@
         tools:ignore="ProtectedPermissions" />
 
     <application>
+        <meta-data android:name="android.notch_support" android:value="true"/>
         <!-- Android 7.0 之后用到FileProvider -->
         <provider
             android:name="top.xuqingquan.utils.ScaffoldFileProvider"
