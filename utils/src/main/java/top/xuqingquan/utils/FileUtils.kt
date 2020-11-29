@@ -242,7 +242,7 @@ fun getTotalStorage(context: Context): Long {
     }
 }
 
-private val units = arrayOf("B", "KB", "MB", "GB", "TB")
+private val units = arrayOf("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", "BB", "NB", "DB")
 
 /**
  * 单位转换
@@ -250,7 +250,7 @@ private val units = arrayOf("B", "KB", "MB", "GB", "TB")
 fun getSizeUnit(size: Double): String {
     var sizeUnit = size
     var index = 0
-    while (sizeUnit > 1024 && index < 4) {
+    while (sizeUnit >= 1024 && index < units.size) {
         sizeUnit /= 1024.0
         index++
     }
