@@ -183,8 +183,10 @@ fun getFileNameFromUri(uri: Uri): String? {
 }
 
 fun copyFileFromUri(context: Context, srcUri: Uri, dstFile: File) {
-    val pfd = context.contentResolver.openFileDescriptor(srcUri, "r") ?: return
-    val inputStream = FileInputStream(pfd.fileDescriptor)
+    //val pfd = context.contentResolver.openFileDescriptor(srcUri, "r") ?: return
+    //val inputStream = FileInputStream(pfd.fileDescriptor)
+    //部分Android 7.0 设备使用openFileDescriptor 读取文件会出错，openInputStream正常
+    val inputStream = context.contentResolver.openInputStream(srcUri) ?: return
     val outputStream = FileOutputStream(dstFile)
     val BUFFER_SIZE = 1024 * 2
     val buffer = ByteArray(BUFFER_SIZE)
