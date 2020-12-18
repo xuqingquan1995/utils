@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.StatFs
+import android.provider.MediaStore
 import android.text.format.DateUtils
 import java.io.Closeable
 import java.io.File
@@ -136,14 +137,8 @@ fun uriToPath(context: Context?, uris: Array<Uri>?): Array<String?>? {
     }
     try {
         val paths = arrayOfNulls<String>(uris.size)
-        val aboveN = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
         uris.forEachIndexed { index, uri ->
-            paths[index] = if (aboveN) {
-                getFilePathFromUri(context.applicationContext, uri)
-            } else {
-                getPath(context.applicationContext, uri)
-            }
-
+            paths[index] = uriToPath(context,uri)
         }
         return paths
     } catch (throwable: Throwable) {
@@ -173,6 +168,39 @@ fun uriToPath(context: Context?, uri: Uri?): String? {
     return null
 }
 
+/**
+ * 将file转为Media类型的uri
+ * 在Android 10 上可以解决无法从file上拿到真实文件的问题
+ * 只拿Uri去处理
+ */
+fun getFileMediaUrl(context: Context, uri: Uri): Uri? {
+    if (uri.scheme != "file") {
+        return uri
+    }
+    val cursor = context.contentResolver.query(
+        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+        arrayOf(MediaStore.Images.Media._ID),
+        MediaStore.Images.Media.DATA + "=? ",
+        arrayOf(uri.path),
+        null
+    )
+    if (cursor == null) {
+        Timber.d("cursor==null")
+        return null
+    }
+    if (cursor.moveToFirst()) {
+        val id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID))
+        val baseUri = Uri.parse("content://media/external/images/media")
+        val uri2 = Uri.withAppendedPath(baseUri, "" + id)
+        Timber.d("uri2=>${uri2}")
+        return uri2
+    } else {
+        Timber.d("cursor.moveToFirst()")
+    }
+    cursor.close()
+    return null
+}
+
 fun getFileNameFromUri(uri: Uri): String? {
     val path = uri.path ?: return null
     val cut = path.lastIndexOf("/")
@@ -183,8 +211,10 @@ fun getFileNameFromUri(uri: Uri): String? {
 }
 
 fun copyFileFromUri(context: Context, srcUri: Uri, dstFile: File) {
-    val pfd = context.contentResolver.openFileDescriptor(srcUri, "r") ?: return
-    val inputStream = FileInputStream(pfd.fileDescriptor)
+    //val pfd = context.contentResolver.openFileDescriptor(srcUri, "r") ?: return
+    //val inputStream = FileInputStream(pfd.fileDescriptor)
+    //部分Android 7.0 设备使用openFileDescriptor 读取文件会出错，openInputStream正常
+    val inputStream = context.contentResolver.openInputStream(srcUri) ?: return
     val outputStream = FileOutputStream(dstFile)
     val BUFFER_SIZE = 1024 * 2
     val buffer = ByteArray(BUFFER_SIZE)
@@ -242,7 +272,7 @@ fun getTotalStorage(context: Context): Long {
     }
 }
 
-private val units = arrayOf("B", "KB", "MB", "GB", "TB")
+private val units = arrayOf("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", "BB", "NB", "DB")
 
 /**
  * 单位转换
@@ -250,7 +280,7 @@ private val units = arrayOf("B", "KB", "MB", "GB", "TB")
 fun getSizeUnit(size: Double): String {
     var sizeUnit = size
     var index = 0
-    while (sizeUnit > 1024 && index < 4) {
+    while (sizeUnit >= 1024 && index < units.size) {
         sizeUnit /= 1024.0
         index++
     }

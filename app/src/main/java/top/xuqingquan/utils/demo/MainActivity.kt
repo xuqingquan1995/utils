@@ -37,18 +37,18 @@ class MainActivity : AppCompatActivity() {
 //        val decompressStr=String(decompressByteArray)
 //        println("decompressStr===>$decompressStr")
         tv.setOnClickListener {
-            toast("${NotchScreenUtil.checkNotchScreen(this)}")
-//            if (hasPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-//                Timber.d("hasPermission")
-//                choosePhoto()
-//            } else {
-//                Timber.d("requestPermissions")
-//                ActivityCompat.requestPermissions(
-//                    this,
-//                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-//                    0x1
-//                )
-//            }
+//            toast("${NotchScreenUtil.checkNotchScreen(this)}")
+            if (hasPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                Timber.d("hasPermission")
+                choosePhoto()
+            } else {
+                Timber.d("requestPermissions")
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    0x1
+                )
+            }
         }
 //        Timber.d("versionCode=" + getVersionCode(this))
 //        val stringRes =
@@ -57,7 +57,6 @@ class MainActivity : AppCompatActivity() {
 //        Timber.d("width=>${getScreenWidth(this)}")
 //        Timber.d("height=>${getScreenHeight(this)}")
 //        Timber.d("statusBarHeight=>"+StatusBarUtils.getStatusbarHeight(this))
-        Timber.d("rom===>${RomUtils.getRomInfo()},${RomUtils.isLeeco()}")
     }
 
     override fun onRequestPermissionsResult(
@@ -83,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                 val file = File(path)
                 val uri = Uri.fromFile(file)
                 Timber.d("uri=>${uri}")
-                val path2 = uriToPath(this, uri)
+                val path2 = getFileMediaUrl(this, uri)
                 Timber.d("path2=>${path2}")
                 Glide.with(this).load(path2).into(iv)
 //                val cursor=contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Images.Media._ID),MediaStore.Images.Media.DATA + "=? ",
