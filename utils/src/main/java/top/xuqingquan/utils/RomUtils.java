@@ -35,6 +35,7 @@ public final class RomUtils {
     private static final String[] ROM_VIVO = {"vivo"};
     private static final String[] ROM_XIAOMI = {"xiaomi"};
     private static final String[] ROM_OPPO = {"oppo"};
+    private static final String[] ROM_REALME = {"realme"};
     private static final String[] ROM_LEECO = {"leeco", "letv"};
     private static final String[] ROM_360 = {"360", "qiku"};
     private static final String[] ROM_ZTE = {"zte"};
@@ -57,6 +58,7 @@ public final class RomUtils {
     private static final String VERSION_PROPERTY_VIVO = "ro.vivo.os.build.display.id";
     private static final String VERSION_PROPERTY_XIAOMI = "ro.build.version.incremental";
     private static final String VERSION_PROPERTY_OPPO = "ro.build.version.opporom";
+    private static final String VERSION_PROPERTY_REALME = "ro.build.version.realmeui";
     private static final String VERSION_PROPERTY_LEECO = "ro.letv.release.version";
     private static final String VERSION_PROPERTY_360 = "ro.build.uiversion";
     private static final String VERSION_PROPERTY_ZTE = "ro.build.MiFavor_version";
@@ -104,6 +106,15 @@ public final class RomUtils {
      */
     public static boolean isOppo() {
         return ROM_OPPO[0].equals(getRomInfo().name);
+    }
+
+    /**
+     * Return whether the rom is made by oppo.
+     *
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isRealme() {
+        return ROM_REALME[0].equals(getRomInfo().name);
     }
 
     /**
@@ -295,6 +306,11 @@ public final class RomUtils {
             bean.version = getRomVersion(VERSION_PROPERTY_OPPO);
             return bean;
         }
+        if (isRightRom(brand, manufacturer, ROM_REALME)) {
+            bean.name = ROM_REALME[0];
+            bean.version = getRomVersion(VERSION_PROPERTY_REALME);
+            return bean;
+        }
         if (isRightRom(brand, manufacturer, ROM_LEECO)) {
             bean.name = ROM_LEECO[0];
             bean.version = getRomVersion(VERSION_PROPERTY_LEECO);
@@ -413,7 +429,6 @@ public final class RomUtils {
     }
 
     private static String getSystemPropertyByShell(final String propName) {
-        String line;
         BufferedReader input = null;
         try {
             Process p = Runtime.getRuntime().exec("getprop " + propName);
@@ -641,6 +656,7 @@ public final class RomUtils {
     public static String getEmuiVersion() {
         return getVersion(sEmuiVersionName);
     }
+
     /**
      * 判断是否为 ZUK Z1 和 ZTK C2016。
      * 两台设备的系统虽然为 android 6.0，但不支持状态栏icon颜色改变，因此经常需要对它们进行额外判断。

@@ -50,13 +50,14 @@ class MainActivity : AppCompatActivity() {
 //                )
 //            }
         }
-        Timber.d("versionCode=" + getVersionCode(this))
-        val stringRes =
-            resources.getIdentifier("app_name", "string", packageName)
-        Timber.d("appName=>${getString(stringRes)}")
-        Timber.d("width=>${getScreenWidth(this)}")
-        Timber.d("height=>${getScreenHeight(this)}")
-        Timber.d("statusBarHeight=>"+StatusBarUtils.getStatusbarHeight(this))
+//        Timber.d("versionCode=" + getVersionCode(this))
+//        val stringRes =
+//            resources.getIdentifier("app_name", "string", packageName)
+//        Timber.d("appName=>${getString(stringRes)}")
+//        Timber.d("width=>${getScreenWidth(this)}")
+//        Timber.d("height=>${getScreenHeight(this)}")
+//        Timber.d("statusBarHeight=>"+StatusBarUtils.getStatusbarHeight(this))
+        Timber.d("rom===>${RomUtils.getRomInfo()},${RomUtils.isLeeco()}")
     }
 
     override fun onRequestPermissionsResult(
