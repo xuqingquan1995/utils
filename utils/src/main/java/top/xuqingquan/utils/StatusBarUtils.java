@@ -55,13 +55,10 @@ public class StatusBarUtils {
     private static int sStatusBarHeight = -1;
     private static @StatusBarType
     int mStatusBarType = STATUSBAR_TYPE_DEFAULT;
-    private static Integer sTransparentValue;
-
 
     private static final int DEFAULT_STATUS_BAR_ALPHA = 0;//默认状态栏透明度
     private static final int FAKE_STATUS_BAR_VIEW_ID = R.id.scaffold_fake_status_bar_view;
     private static final int STATUSBARUTILS_NAVIGATION_BAR_VIEW = R.id.scaffold_navigation_bar_view;
-    private static final int sStatusbarHeight = -1;
     /**
      * 导航栏竖屏高度标识位
      */
@@ -93,7 +90,7 @@ public class StatusBarUtils {
 
     private static boolean supportTranslucent() {
         // Essential Phone 在 Android 8 之前沉浸式做得不全，系统不从状态栏顶部开始布局却会下发 WindowInsets
-        return !(RomUtils.isEssential() && Build.VERSION.SDK_INT < 26);
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !(RomUtils.isEssential() && Build.VERSION.SDK_INT < 26);
     }
 
     /**
@@ -127,8 +124,9 @@ public class StatusBarUtils {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            int systemUiVisibility = window.getDecorView().getSystemUiVisibility();
+            systemUiVisibility |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            window.getDecorView().setSystemUiVisibility(systemUiVisibility);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && supportTransclentStatusBar6()) {
                 // android 6以后可以改状态栏字体颜色，因此可以自行设置为透明
                 // ZUK Z1是个另类，自家应用可以实现字体颜色变色，但没开放接口
@@ -161,21 +159,23 @@ public class StatusBarUtils {
     @TargetApi(28)
     private static void handleDisplayCutoutMode(final Window window) {
         View decorView = window.getDecorView();
-        if (ViewCompat.isAttachedToWindow(decorView)) {
-            realHandleDisplayCutoutMode(window, decorView);
-        } else {
-            decorView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-                @Override
-                public void onViewAttachedToWindow(View v) {
-                    v.removeOnAttachStateChangeListener(this);
-                    realHandleDisplayCutoutMode(window, v);
-                }
+        if (decorView != null) {
+            if (ViewCompat.isAttachedToWindow(decorView)) {
+                realHandleDisplayCutoutMode(window, decorView);
+            } else {
+                decorView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                    @Override
+                    public void onViewAttachedToWindow(View v) {
+                        v.removeOnAttachStateChangeListener(this);
+                        realHandleDisplayCutoutMode(window, v);
+                    }
 
-                @Override
-                public void onViewDetachedFromWindow(View v) {
+                    @Override
+                    public void onViewDetachedFromWindow(View v) {
 
-                }
-            });
+                    }
+                });
+            }
         }
     }
 
@@ -206,16 +206,18 @@ public class StatusBarUtils {
         if (mStatusBarType != STATUSBAR_TYPE_DEFAULT) {
             return setStatusBarLightMode(activity, mStatusBarType);
         }
-        if (isMIUICustomStatusBarLightModeImpl() && MIUISetStatusBarLightMode(activity.getWindow(), true)) {
-            mStatusBarType = STATUSBAR_TYPE_MIUI;
-            return true;
-        } else if (FlymeSetStatusBarLightMode(activity.getWindow(), true)) {
-            mStatusBarType = STATUSBAR_TYPE_FLYME;
-            return true;
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Android6SetStatusBarLightMode(activity.getWindow(), true);
-            mStatusBarType = STATUSBAR_TYPE_ANDROID6;
-            return true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (isMIUICustomStatusBarLightModeImpl() && MIUISetStatusBarLightMode(activity.getWindow(), true)) {
+                mStatusBarType = STATUSBAR_TYPE_MIUI;
+                return true;
+            } else if (FlymeSetStatusBarLightMode(activity.getWindow(), true)) {
+                mStatusBarType = STATUSBAR_TYPE_FLYME;
+                return true;
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Android6SetStatusBarLightMode(activity.getWindow(), true);
+                mStatusBarType = STATUSBAR_TYPE_ANDROID6;
+                return true;
+            }
         }
         return false;
     }
@@ -260,26 +262,6 @@ public class StatusBarUtils {
         return true;
     }
 
-    @TargetApi(23)
-    private static int changeStatusBarModeRetainFlag(Window window, int out) {
-        out = retainSystemUiFlag(window, out, View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        out = retainSystemUiFlag(window, out, View.SYSTEM_UI_FLAG_FULLSCREEN);
-        out = retainSystemUiFlag(window, out, View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        out = retainSystemUiFlag(window, out, View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        out = retainSystemUiFlag(window, out, View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        out = retainSystemUiFlag(window, out, View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-        return out;
-    }
-
-    public static int retainSystemUiFlag(Window window, int out, int type) {
-        int now = window.getDecorView().getSystemUiVisibility();
-        if ((now & type) == type) {
-            out |= type;
-        }
-        return out;
-    }
-
-
     /**
      * 设置状态栏字体图标为深色，Android 6
      *
@@ -290,8 +272,12 @@ public class StatusBarUtils {
     @TargetApi(23)
     private static boolean Android6SetStatusBarLightMode(Window window, boolean light) {
         View decorView = window.getDecorView();
-        int systemUi = light ? View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR : View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-        systemUi = changeStatusBarModeRetainFlag(window, systemUi);
+        int systemUi = decorView.getSystemUiVisibility();
+        if (light) {
+            systemUi |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        } else {
+            systemUi &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        }
         decorView.setSystemUiVisibility(systemUi);
         if (RomUtils.isMIUIV9()) {
             // MIUI 9 低于 6.0 版本依旧只能回退到以前的方案
@@ -407,40 +393,6 @@ public class StatusBarUtils {
     }
 
     /**
-     * API19之前透明状态栏：获取设置透明状态栏的system ui visibility的值，这是部分有提供接口的rom使用的
-     * http://stackoverflow.com/questions/21865621/transparent-status-bar-before-4-4-kitkat
-     */
-    public static Integer getStatusBarAPITransparentValue(Context context) {
-        if (sTransparentValue != null) {
-            return sTransparentValue;
-        }
-        String[] systemSharedLibraryNames = context.getPackageManager()
-                .getSystemSharedLibraryNames();
-        String fieldName = null;
-        if (systemSharedLibraryNames != null) {
-            for (String lib : systemSharedLibraryNames) {
-                if ("touchwiz".equals(lib)) {
-                    fieldName = "SYSTEM_UI_FLAG_TRANSPARENT_BACKGROUND";
-                } else if (lib.startsWith("com.sonyericsson.navigationbar")) {
-                    fieldName = "SYSTEM_UI_FLAG_TRANSPARENT";
-                }
-            }
-        }
-
-        if (fieldName != null) {
-            try {
-                Field field = View.class.getField(fieldName);
-                Class<?> type = field.getType();
-                if (type == int.class) {
-                    sTransparentValue = field.getInt(null);
-                }
-            } catch (Throwable ignored) {
-            }
-        }
-        return sTransparentValue;
-    }
-
-    /**
      * 检测 Android 6.0 是否可以启用 window.setStatusBarColor(Color.TRANSPARENT)。
      */
     public static boolean supportTransclentStatusBar6() {
@@ -478,26 +430,19 @@ public class StatusBarUtils {
         } catch (Throwable t) {
             t.printStackTrace();
         }
-        if (field != null) {
+        if (field != null && obj != null) {
             try {
-                //noinspection ConstantConditions
                 int id = Integer.parseInt(field.get(obj).toString());
                 sStatusBarHeight = context.getResources().getDimensionPixelSize(id);
             } catch (Throwable t) {
                 t.printStackTrace();
             }
         }
-        if (RomUtils.isTablet(context)
-                && sStatusBarHeight > DimensionsKt.dip(context, STATUS_BAR_DEFAULT_HEIGHT_DP)) {
-            //状态栏高度大于25dp的平板，状态栏通常在下方
-            sStatusBarHeight = 0;
-        } else {
-            if (sStatusBarHeight <= 0) {
-                if (sVirtualDensity == -1) {
-                    sStatusBarHeight = DimensionsKt.dip(context, STATUS_BAR_DEFAULT_HEIGHT_DP);
-                } else {
-                    sStatusBarHeight = (int) (STATUS_BAR_DEFAULT_HEIGHT_DP * sVirtualDensity + 0.5f);
-                }
+        if (sStatusBarHeight <= 0) {
+            if (sVirtualDensity == -1) {
+                sStatusBarHeight = DimensionsKt.dip(context, STATUS_BAR_DEFAULT_HEIGHT_DP);
+            } else {
+                sStatusBarHeight = (int) (STATUS_BAR_DEFAULT_HEIGHT_DP * sVirtualDensity + 0.5f);
             }
         }
     }
@@ -770,7 +715,6 @@ public class StatusBarUtils {
      * @param statusBar     是否显示statusbar
      * @param navigationBar 是否显示navigationBar
      */
-    @SuppressWarnings("ConstantConditions")
     public static void showhideBar(Activity activity, boolean statusBar, boolean navigationBar) {
         ViewGroup mDecorView = (ViewGroup) activity.getWindow().getDecorView();
         int flag = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;

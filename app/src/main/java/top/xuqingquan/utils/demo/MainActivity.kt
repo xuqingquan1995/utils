@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
@@ -57,6 +58,8 @@ class MainActivity : AppCompatActivity() {
 //        Timber.d("width=>${getScreenWidth(this)}")
 //        Timber.d("height=>${getScreenHeight(this)}")
 //        Timber.d("statusBarHeight=>"+StatusBarUtils.getStatusbarHeight(this))
+        StatusBarUtils.setNavigationBackgroundColor(this,ContextCompat.getColor(this,R.color.black))
+        StatusBarUtils.setNavigationIconDark(this,true)
     }
 
     override fun onRequestPermissionsResult(
