@@ -158,7 +158,9 @@ fun getMacAddress(context: Context): String {
             return mac
         }
         @SuppressLint("HardwareIds")
-        mac = info.macAddress
+        if (info.macAddress.isNullOrEmpty()) {
+            return mac
+        }
         if (!TextUtils.isEmpty(mac)) {
             mac = mac.toUpperCase(Locale.getDefault())
         }
