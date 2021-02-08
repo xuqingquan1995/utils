@@ -4,7 +4,7 @@ package top.xuqingquan.utils
 
 import android.app.Activity
 import android.content.*
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.text.TextUtils
 
 /**

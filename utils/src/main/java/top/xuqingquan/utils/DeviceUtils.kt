@@ -7,8 +7,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.provider.Settings
-import android.support.annotation.RequiresPermission
-import android.support.v4.content.ContextCompat
+import androidx.annotation.RequiresPermission
+import androidx.core.content.ContextCompat
 import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
 

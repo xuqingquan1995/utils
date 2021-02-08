@@ -1,8 +1,8 @@
 package top.xuqingquan.utils;
 
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.Locale;
 
@@ -10,7 +10,7 @@ import java.util.Locale;
  * Created by 许清泉 on 2020/3/9 00:00
  * androidx 里面的被限制了，复制出内容直接使用
  *
- * @see android.support.v4.util.Preconditions
+ * @see androidx.core.util.Preconditions
  */
 public final class Preconditions {
     public static void checkArgument(boolean expression) {

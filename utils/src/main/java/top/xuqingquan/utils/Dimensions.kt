@@ -4,8 +4,8 @@ package top.xuqingquan.utils
 
 import android.content.Context
 import android.view.View
-import android.support.annotation.DimenRes
-import android.support.v4.app.Fragment
+import androidx.annotation.DimenRes
+import androidx.fragment.app.Fragment
 
 //returns dip(dp) dimension value in pixels
 fun Context.dip(value: Int): Int = (value * resources.displayMetrics.density).toInt()

@@ -11,7 +11,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 
 inline fun <reified T: Activity> Context.startActivity(vararg params: Pair<String, Any?>) =
     AnkoInternals.internalStartActivity(this, T::class.java, params)

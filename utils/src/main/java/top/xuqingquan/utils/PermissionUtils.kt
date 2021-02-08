@@ -5,9 +5,9 @@ package top.xuqingquan.utils
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import android.support.v4.app.AppOpsManagerCompat
+import androidx.core.app.AppOpsManagerCompat
 import android.text.TextUtils
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import java.util.*
 
 /**

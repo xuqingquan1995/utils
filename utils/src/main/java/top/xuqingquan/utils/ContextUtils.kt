@@ -3,14 +3,13 @@ package top.xuqingquan.utils
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.annotation.IdRes
-import android.support.v4.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
+import androidx.fragment.app.Fragment
 import java.io.Serializable
 
 inline val Context.ctx: Context
