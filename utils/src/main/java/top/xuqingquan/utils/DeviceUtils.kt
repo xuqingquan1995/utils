@@ -48,14 +48,18 @@ fun getScreenWidth(context: Context): Int {
 @SuppressLint("HardwareIds")
 @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
 fun getIMEI(context: Context): String? {
-    return if (hasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
-        val tel = ContextCompat.getSystemService(context, TelephonyManager::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            tel?.imei
+    return try {
+        if (hasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
+            val tel = ContextCompat.getSystemService(context, TelephonyManager::class.java)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                tel?.imei
+            } else {
+                tel?.deviceId
+            }
         } else {
-            tel?.deviceId
+            null
         }
-    } else {
+    } catch (t: Throwable) {
         null
     }
 }
