@@ -23,7 +23,7 @@ import java.util.*
 
 
 /**
- * Created by 许清泉 on 2019-05-27 00:54
+ * @author 许清泉 on 2019-05-27 00:54
  */
 @Suppress("DEPRECATION")
 fun checkNetworkType(ctx: Context): Int {

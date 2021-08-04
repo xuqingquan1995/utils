@@ -10,7 +10,7 @@ import java.util.Collections.unmodifiableList
 import java.util.regex.Pattern
 
 /**
- * Created by 许清泉 on 2019/4/15 23:38
+ * @author 许清泉 on 2019/4/15 23:38
  */
 /** Logging for lazy people. */
 @Suppress("DEPRECATION", "NAME_SHADOWING", "CYCLIC_SCOPES_WITH_COMPANION", "RemoveRedundantQualifierName",

@@ -27,9 +27,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
- * Created by 许清泉 on 2019-07-23 20:00
+ * @author 许清泉 on 2019-07-23 20:00
  * 从QMUI上提取后加工改造
  * {@link #translucent 可以设置沉浸式}
  * {@link #setStatusBarTextBlack 可以将statusbar的文字设置成黑色}
@@ -209,18 +210,16 @@ public class StatusBarUtils {
         if (mStatusBarType != STATUSBAR_TYPE_DEFAULT) {
             return setStatusBarLightMode(activity, mStatusBarType);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (isMIUICustomStatusBarLightModeImpl() && MIUISetStatusBarLightMode(activity.getWindow(), true)) {
-                mStatusBarType = STATUSBAR_TYPE_MIUI;
-                return true;
-            } else if (FlymeSetStatusBarLightMode(activity.getWindow(), true)) {
-                mStatusBarType = STATUSBAR_TYPE_FLYME;
-                return true;
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Android6SetStatusBarLightMode(activity.getWindow(), true);
-                mStatusBarType = STATUSBAR_TYPE_ANDROID6;
-                return true;
-            }
+        if (isMIUICustomStatusBarLightModeImpl() && MIUISetStatusBarLightMode(activity.getWindow(), true)) {
+            mStatusBarType = STATUSBAR_TYPE_MIUI;
+            return true;
+        } else if (FlymeSetStatusBarLightMode(activity.getWindow(), true)) {
+            mStatusBarType = STATUSBAR_TYPE_FLYME;
+            return true;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Android6SetStatusBarLightMode(activity.getWindow(), true);
+            mStatusBarType = STATUSBAR_TYPE_ANDROID6;
+            return true;
         }
         return false;
     }
@@ -435,9 +434,9 @@ public class StatusBarUtils {
         } catch (Throwable t) {
             t.printStackTrace();
         }
-        if (field != null && obj != null) {
+        if (field != null) {
             try {
-                int id = Integer.parseInt(field.get(obj).toString());
+                int id = Integer.parseInt(Objects.requireNonNull(field.get(obj)).toString());
                 sStatusBarHeight = context.getResources().getDimensionPixelSize(id);
             } catch (Throwable t) {
                 t.printStackTrace();
@@ -732,7 +731,7 @@ public class StatusBarUtils {
         } else if (!navigationBar) {//如果有导航栏且隐藏导航栏
             flag |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-        } else if (!statusBar) {//隐藏状态栏
+        } else {//隐藏状态栏
             flag |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.INVISIBLE;
         }
         flag |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;

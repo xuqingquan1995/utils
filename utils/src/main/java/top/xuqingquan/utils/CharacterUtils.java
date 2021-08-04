@@ -16,18 +16,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by 许清泉 on 2019/4/14 21:06
+ * @author 许清泉 on 2019/4/14 21:06
  * 处理字符串的工具类
  */
+@SuppressWarnings({"AlibabaUndefineMagicConstant"})
 public class CharacterUtils {
 
     private CharacterUtils() {
         throw new IllegalStateException("you can't instantiate me!");
     }
 
-    public static final InputFilter emojiFilter = new InputFilter() {//emoji过滤器
+    /**
+     * emoji过滤器
+     */
+    public static final InputFilter EMOJI_FILTER = new InputFilter() {
         final Pattern emoji = Pattern.compile(
-                "[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]",
+                "[\ud83c\udc00-\ud83c\udfff]|[\u2600-\u27ff]",
                 Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
 
         @Override
@@ -63,8 +67,8 @@ public class CharacterUtils {
     /**
      * json 格式化
      *
-     * @param json
-     * @return
+     * @param json json
+     * @return jsonFormat
      */
     public static String jsonFormat(String json) {
         if (TextUtils.isEmpty(json)) {
@@ -93,8 +97,8 @@ public class CharacterUtils {
     /**
      * xml 格式化
      *
-     * @param xml
-     * @return
+     * @param xml xml
+     * @return xmlFormat
      */
     public static String xmlFormat(String xml) {
         if (TextUtils.isEmpty(xml)) {
@@ -118,8 +122,8 @@ public class CharacterUtils {
     /**
      * 判断字符串是否为json字符串
      *
-     * @param target
-     * @return
+     * @param target str
+     * @return isJson
      */
     public static boolean isJson(String target) {
         if (TextUtils.isEmpty(target)) {

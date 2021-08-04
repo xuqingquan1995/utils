@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 import android.view.DisplayCutout;
 import android.view.Window;
 import android.view.WindowInsets;
@@ -17,10 +16,10 @@ import java.lang.reflect.Method;
 /**
  * notch screen (刘海屏) 检测utils
  * 适配了华为、oppo、小米、vivo
+ *
+ * @author 许清泉
  */
 public class NotchScreenUtil {
-
-    private static final String TAG = "NotchScreenUtil";
 
     /**
      * 设置应用窗口在华为notch手机使用刘海区的flag值, 该值为华为官方提供, 不要修改
@@ -54,13 +53,11 @@ public class NotchScreenUtil {
             return true;
         } else if (checkVivo(context)) {
             return true;
-        } else if (checkMiUI(context)) {
+        } else if (checkMiUi(context)) {
             return true;
-        } else if (checkOppo(context)) {
-            return true;
+        } else {
+            return checkOppo(context);
         }
-
-        return false;
     }
 
     /**
@@ -72,7 +69,7 @@ public class NotchScreenUtil {
         try {
             return context.getPackageManager().hasSystemFeature("com.oppo.feature.screen.heteromorphism");
         } catch (Exception e) {
-            Log.e(TAG, "checkOppo notchScreen exception");
+            Timber.e("checkOppo notchScreen exception");
         }
         return false;
     }
@@ -82,9 +79,8 @@ public class NotchScreenUtil {
      *
      * @return true, 刘海屏; false: 非刘海屏
      */
-    private static boolean checkMiUI(Context context) {
-
-        int result = 0;
+    private static boolean checkMiUi(Context context) {
+        int result;
         try {
             ClassLoader classLoader = context.getClassLoader();
             @SuppressLint("PrivateApi")
@@ -95,22 +91,16 @@ public class NotchScreenUtil {
             Class[] paramTypes = new Class[2];
             paramTypes[0] = String.class;
             paramTypes[1] = int.class;
+            //noinspection unchecked
             Method getInt = systemProperties.getMethod("getInt", paramTypes);
             //参数
             Object[] params = new Object[2];
             params[0] = "ro.miui.notch";
             params[1] = 0;
+            //noinspection ConstantConditions
             result = (Integer) getInt.invoke(systemProperties, params);
             return result == 1;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return false;
@@ -123,25 +113,19 @@ public class NotchScreenUtil {
      * @return true：刘海屏；false：非刘海屏
      */
     private static boolean checkHuaWei(Context context) {
-
         boolean ret = false;
-
         try {
-
             ClassLoader cl = context.getClassLoader();
-
-            Class hwNotchSizeUtil = cl.loadClass("com.huawei.android.util.HwNotchSizeUtil");
-
+            Class<?> hwNotchSizeUtil = cl.loadClass("com.huawei.android.util.HwNotchSizeUtil");
             Method get = hwNotchSizeUtil.getMethod("hasNotchInScreen");
-
+            //noinspection ConstantConditions
             ret = (boolean) get.invoke(hwNotchSizeUtil);
-
         } catch (ClassNotFoundException e) {
-            Log.e(TAG, "hasNotchInScreen ClassNotFoundException");
+            Timber.e("hasNotchInScreen ClassNotFoundException");
         } catch (NoSuchMethodException e) {
-            Log.e(TAG, "hasNotchInScreen NoSuchMethodException");
+            Timber.e("hasNotchInScreen NoSuchMethodException");
         } catch (Exception e) {
-            Log.e(TAG, "hasNotchInScreen Exception");
+            Timber.e("hasNotchInScreen Exception");
 
         }
         return ret;
@@ -153,13 +137,13 @@ public class NotchScreenUtil {
      * @param context Context
      * @return true：是刘海屏；false：非刘海屏
      */
+    @SuppressWarnings({"ConstantConditions", "JavaReflectionInvocation"})
     private static boolean checkVivo(Context context) {
-
         boolean ret;
         try {
             ClassLoader cl = context.getClassLoader();
             @SuppressLint("PrivateApi")
-            Class ftFeature = cl.loadClass("android.util.FtFeature");
+            Class<?> ftFeature = cl.loadClass("android.util.FtFeature");
             Method isFeatureSupport = ftFeature.getMethod("isFeatureSupport");
             ret = (boolean) isFeatureSupport.invoke(ftFeature, FLAG_NOTCH_SUPPORT_VIVO);
         } catch (Exception e) {
@@ -176,31 +160,18 @@ public class NotchScreenUtil {
      * @return int[0]值为刘海宽度 int[1]值为刘海高度。
      */
     public static int[] getNotchSize(Context context) {
-
         int[] ret = new int[]{0, 0};
-
         try {
-
             ClassLoader cl = context.getClassLoader();
-
-            Class hwnotchsizeutil = cl.loadClass("com.huawei.android.util.HwNotchSizeUtil");
-
+            Class<?> hwnotchsizeutil = cl.loadClass("com.huawei.android.util.HwNotchSizeUtil");
             Method get = hwnotchsizeutil.getMethod("getNotchSize");
-
             ret = (int[]) get.invoke(hwnotchsizeutil);
-
         } catch (ClassNotFoundException e) {
-
-            Log.e("test", "getNotchSize ClassNotFoundException");
-
+            Timber.e("getNotchSize ClassNotFoundException");
         } catch (NoSuchMethodException e) {
-
-            Log.e("test", "getNotchSize NoSuchMethodException");
-
+            Timber.e("getNotchSize NoSuchMethodException");
         } catch (Exception e) {
-
-            Log.e("test", "getNotchSize Exception");
-
+            Timber.e("getNotchSize Exception");
         }
         return ret;
     }
@@ -216,23 +187,15 @@ public class NotchScreenUtil {
         }
         WindowManager.LayoutParams layoutParams = window.getAttributes();
         try {
-            Class layoutParamsExCls = Class.forName("com.huawei.android.view.LayoutParamsEx");
-            Constructor con = layoutParamsExCls.getConstructor(WindowManager.LayoutParams.class);
+            Class<?> layoutParamsExCls = Class.forName("com.huawei.android.view.LayoutParamsEx");
+            Constructor<?> con = layoutParamsExCls.getConstructor(WindowManager.LayoutParams.class);
             Object layoutParamsExObj = con.newInstance(layoutParams);
             Method method = layoutParamsExCls.getMethod("addHwFlags", int.class);
             method.invoke(layoutParamsExObj, FLAG_NOTCH_SUPPORT_HW);
-        } catch (ClassNotFoundException e) {
-            Log.e(TAG, "hw add notch screen flag api error");
-        } catch (NoSuchMethodException e) {
-            Log.e(TAG, "hw add notch screen flag api error");
-        } catch (IllegalAccessException e) {
-            Log.e(TAG, "hw add notch screen flag api error");
-        } catch (InstantiationException e) {
-            Log.e(TAG, "hw add notch screen flag api error");
-        } catch (InvocationTargetException e) {
-            Log.e(TAG, "hw add notch screen flag api error");
+        } catch (ClassNotFoundException | InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
+            Timber.e("hw add notch screen flag api error");
         } catch (Exception e) {
-            Log.e(TAG, "other Exception");
+            Timber.e("other Exception");
         }
     }
 
@@ -247,24 +210,16 @@ public class NotchScreenUtil {
         }
         WindowManager.LayoutParams layoutParams = window.getAttributes();
         try {
-            Class layoutParamsExCls = Class.forName("com.huawei.android.view.LayoutParamsEx");
-            Constructor con = layoutParamsExCls.getConstructor(WindowManager.LayoutParams.class);
+            Class<?> layoutParamsExCls = Class.forName("com.huawei.android.view.LayoutParamsEx");
+            Constructor<?> con = layoutParamsExCls.getConstructor(WindowManager.LayoutParams.class);
             Object layoutParamsExObj = con.newInstance(layoutParams);
             Method method = layoutParamsExCls.getMethod("clearHwFlags", int.class);
             method.invoke(layoutParamsExObj, FLAG_NOTCH_SUPPORT_HW);
-            Log.e(TAG, "............clear");
-        } catch (ClassNotFoundException e) {
-            Log.e(TAG, "hw clear notch screen flag api error");
-        } catch (NoSuchMethodException e) {
-            Log.e(TAG, "hw clear notch screen flag api error");
-        } catch (IllegalAccessException e) {
-            Log.e(TAG, "hw clear notch screen flag api error");
-        } catch (InstantiationException e) {
-            Log.e(TAG, "hw clear notch screen flag api error");
-        } catch (InvocationTargetException e) {
-            Log.e(TAG, "hw clear notch screen flag api error");
+            Timber.e("............clear");
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            Timber.e("hw clear notch screen flag api error");
         } catch (Exception e) {
-            Log.e(TAG, "other Exception");
+            Timber.e("other Exception");
         }
     }
 }

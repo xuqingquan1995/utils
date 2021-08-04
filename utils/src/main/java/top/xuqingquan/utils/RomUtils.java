@@ -276,7 +276,9 @@ public final class RomUtils {
      * @return the rom's information
      */
     public static RomInfo getRomInfo() {
-        if (bean != null) return bean;
+        if (bean != null) {
+            return bean;
+        }
         bean = new RomInfo();
         final String brand = getBrand();
         final String manufacturer = getManufacturer();
@@ -419,9 +421,13 @@ public final class RomUtils {
 
     private static String getSystemProperty(final String name) {
         String prop = getSystemPropertyByShell(name);
-        if (!TextUtils.isEmpty(prop)) return prop;
+        if (!TextUtils.isEmpty(prop)) {
+            return prop;
+        }
         prop = getSystemPropertyByStream(name);
-        if (!TextUtils.isEmpty(prop)) return prop;
+        if (!TextUtils.isEmpty(prop)) {
+            return prop;
+        }
         if (Build.VERSION.SDK_INT < 28) {
             return getSystemPropertyByReflect(name);
         }
@@ -471,7 +477,7 @@ public final class RomUtils {
     }
 
     public static String getVersion(String versionName) {
-        if (versionName != null && !versionName.equals("")) {
+        if (versionName != null && !"".equals(versionName)) {
             Pattern pattern = Pattern.compile("(\\d+\\.){1,3}\\d+");
             Matcher matcher = pattern.matcher(versionName);
             if (matcher.find()) {
@@ -619,7 +625,7 @@ public final class RomUtils {
 
     public static boolean isFlymeLowerThan(int majorVersion, int minorVersion, int patchVersion) {
         boolean isLower = false;
-        if (sFlymeVersionName != null && !sFlymeVersionName.equals("")) {
+        if (sFlymeVersionName != null && !"".equals(sFlymeVersionName)) {
             try {
                 String versionString = getVersion(sFlymeVersionName);
                 if (versionString.length() > 0) {
@@ -694,7 +700,9 @@ public final class RomUtils {
             } catch (Throwable ignored) {
             }
         }
-        if (name != null) name = name.toLowerCase();
+        if (name != null) {
+            name = name.toLowerCase();
+        }
         return name;
     }
 }

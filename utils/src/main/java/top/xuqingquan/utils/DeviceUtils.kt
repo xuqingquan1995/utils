@@ -13,12 +13,12 @@ import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
 
 /**
- * Created by 许清泉 on 2019-04-29 23:28
+ * @author 许清泉 on 2019-04-29 23:28
  */
 
 //获取屏幕相关参数
 fun getDisplayMetrics(context: Context): DisplayMetrics {
-    return context.displayMetrics
+    return context.resources.displayMetrics
 }
 
 /**

@@ -148,7 +148,9 @@ public final class ReflectUtils {
     }
 
     private Class<?>[] getArgsType(final Object... args) {
-        if (args == null) return new Class[0];
+        if (args == null) {
+            return new Class[0];
+        }
         Class<?>[] result = new Class[args.length];
         for (int i = 0; i < args.length; i++) {
             Object value = args[i];
@@ -159,7 +161,7 @@ public final class ReflectUtils {
 
     private void sortConstructors(List<Constructor<?>> list) {
         //noinspection Convert2Lambda
-        Collections.sort(list, new Comparator<Constructor<?>>() {
+        Collections.sort(list, new Comparator<>() {
             @Override
             public int compare(Constructor<?> o1, Constructor<?> o2) {
                 Class<?>[] types1 = o1.getParameterTypes();
@@ -230,6 +232,7 @@ public final class ReflectUtils {
         Field field = getAccessibleField(name);
         if ((field.getModifiers() & Modifier.FINAL) == Modifier.FINAL) {
             try {
+                //noinspection JavaReflectionMemberAccess
                 Field modifiersField = Field.class.getDeclaredField("modifiers");
                 modifiersField.setAccessible(true);
                 modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
@@ -365,7 +368,7 @@ public final class ReflectUtils {
 
     private void sortMethods(final List<Method> methods) {
         //noinspection Convert2Lambda
-        Collections.sort(methods, new Comparator<Method>() {
+        Collections.sort(methods, new Comparator<>() {
             @Override
             public int compare(Method o1, Method o2) {
                 Class<?>[] types1 = o1.getParameterTypes();
@@ -408,7 +411,9 @@ public final class ReflectUtils {
     }
 
     private <T extends AccessibleObject> T accessible(T accessible) {
-        if (accessible == null) return null;
+        if (accessible == null) {
+            return null;
+        }
         if (accessible instanceof Member) {
             Member member = (Member) accessible;
             if (Modifier.isPublic(member.getModifiers())
@@ -416,7 +421,9 @@ public final class ReflectUtils {
                 return accessible;
             }
         }
-        if (!accessible.isAccessible()) accessible.setAccessible(true);
+        if (!accessible.isAccessible()) {
+            accessible.setAccessible(true);
+        }
         return accessible;
     }
 

@@ -11,7 +11,7 @@ import android.provider.MediaStore
 
 
 /**
- * Created by 许清泉 on 2018/02/12 19:10
+ * @author 许清泉 on 2018/02/12 19:10
  */
 fun getPath(context: Context, uri: Uri): String? {
     if (DocumentsContract.isDocumentUri(context, uri)) {

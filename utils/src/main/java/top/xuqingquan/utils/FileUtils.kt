@@ -11,12 +11,11 @@ import android.provider.MediaStore
 import android.text.format.DateUtils
 import java.io.Closeable
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.*
 
 /**
- * Created by 许清泉 on 2019/4/14 21:49
+ * @author 许清泉 on 2019/4/14 21:49
  */
 /**
  * 创建未存在的文件夹
@@ -216,11 +215,11 @@ fun copyFileFromUri(context: Context, srcUri: Uri, dstFile: File) {
     //部分Android 7.0 设备使用openFileDescriptor 读取文件会出错，openInputStream正常
     val inputStream = context.contentResolver.openInputStream(srcUri) ?: return
     val outputStream = FileOutputStream(dstFile)
-    val BUFFER_SIZE = 1024 * 2
-    val buffer = ByteArray(BUFFER_SIZE)
+    val bufferSize = 1024 * 2
+    val buffer = ByteArray(bufferSize)
     try {
         var n: Int
-        while (inputStream.read(buffer, 0, BUFFER_SIZE).also { n = it } != -1) {
+        while (inputStream.read(buffer, 0, bufferSize).also { n = it } != -1) {
             outputStream.write(buffer, 0, n)
         }
         outputStream.flush()

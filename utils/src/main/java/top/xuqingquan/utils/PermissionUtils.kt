@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import java.util.*
 
 /**
- * Created by 许清泉 on 2019-05-27 01:18
+ * @author 许清泉 on 2019-05-27 01:18
  */
 
 fun hasPermission(context: Context, vararg permissions: String): Boolean {

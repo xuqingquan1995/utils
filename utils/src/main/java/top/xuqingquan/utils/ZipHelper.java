@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.zip.*;
 
 /**
- * Created by 许清泉 on 2019/4/14 21:13
+ * @author 许清泉 on 2019/4/14 21:13
  * 处理压缩和解压的工具类
  */
 public class ZipHelper {
@@ -18,8 +18,8 @@ public class ZipHelper {
     /**
      * zlib decompress 2 String
      *
-     * @param bytesToDecompress
-     * @return
+     * @param bytesToDecompress byte
+     * @return result
      */
     public static String decompressToStringForZlib(byte[] bytesToDecompress) {
         return decompressToStringForZlib(bytesToDecompress, "UTF-8");
@@ -28,9 +28,9 @@ public class ZipHelper {
     /**
      * zlib decompress 2 String
      *
-     * @param bytesToDecompress
-     * @param charsetName
-     * @return
+     * @param bytesToDecompress byte
+     * @param charsetName charset
+     * @return result
      */
     public static String decompressToStringForZlib(byte[] bytesToDecompress, String charsetName) {
         byte[] bytesDecompressed = decompressForZlib(bytesToDecompress);
@@ -47,8 +47,8 @@ public class ZipHelper {
     /**
      * zlib decompress 2 byte
      *
-     * @param bytesToDecompress
-     * @return
+     * @param bytesToDecompress byte
+     * @return result
      */
     public static byte[] decompressForZlib(byte[] bytesToDecompress) {
         byte[] returnValues = null;
@@ -80,8 +80,8 @@ public class ZipHelper {
     /**
      * zlib compress 2 byte
      *
-     * @param bytesToCompress
-     * @return
+     * @param bytesToCompress byte
+     * @return result
      */
     public static byte[] compressForZlib(byte[] bytesToCompress) {
         Deflater deflater = new Deflater();
@@ -97,8 +97,8 @@ public class ZipHelper {
     /**
      * zlib compress 2 byte
      *
-     * @param stringToCompress
-     * @return
+     * @param stringToCompress str
+     * @return result
      */
     public static byte[] compressForZlib(String stringToCompress) {
         return compressForZlib(stringToCompress.getBytes(StandardCharsets.UTF_8));
@@ -107,8 +107,8 @@ public class ZipHelper {
     /**
      * gzip compress 2 byte
      *
-     * @param string
-     * @return
+     * @param string str
+     * @return result
      */
     public static byte[] compressForGzip(String string) {
         ByteArrayOutputStream os = null;
@@ -130,8 +130,8 @@ public class ZipHelper {
     /**
      * gzip decompress 2 string
      *
-     * @param compressed
-     * @return
+     * @param compressed byte
+     * @return result
      */
     public static String decompressForGzip(byte[] compressed) {
         return decompressForGzip(compressed, "UTF-8");
@@ -140,9 +140,9 @@ public class ZipHelper {
     /**
      * gzip decompress 2 string
      *
-     * @param compressed
-     * @param charsetName
-     * @return
+     * @param compressed byte
+     * @param charsetName charset
+     * @return result
      */
     public static String decompressForGzip(byte[] compressed, String charsetName) {
         final int BUFFER_SIZE = compressed.length;
