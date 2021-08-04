@@ -47,18 +47,19 @@ public class StatusBarUtils {
     private final static int STATUSBAR_TYPE_DEFAULT = 0;
     private final static int STATUSBAR_TYPE_MIUI = 1;
     private final static int STATUSBAR_TYPE_FLYME = 2;
-    private final static int STATUSBAR_TYPE_ANDROID6 = 3; // Android 6.0
-    private final static int STATUS_BAR_DEFAULT_HEIGHT_DP = 25; // 大部分状态栏都是25dp
+    // Android 6.0
+    private final static int STATUSBAR_TYPE_ANDROID6 = 3;
+    // 大部分状态栏都是25dp
+    private final static int STATUS_BAR_DEFAULT_HEIGHT_DP = 25;
     // 在某些机子上存在不同的density值，所以增加两个虚拟值
     public static float sVirtualDensity = -1;
     public static float sVirtualDensityDpi = -1;
     private static int sStatusBarHeight = -1;
-    private static @StatusBarType
-    int mStatusBarType = STATUSBAR_TYPE_DEFAULT;
-
-    private static final int DEFAULT_STATUS_BAR_ALPHA = 0;//默认状态栏透明度
+    private static @StatusBarType int mStatusBarType = STATUSBAR_TYPE_DEFAULT;
+    //默认状态栏透明度
+    private static final int DEFAULT_STATUS_BAR_ALPHA = 0;
     private static final int FAKE_STATUS_BAR_VIEW_ID = R.id.scaffold_fake_status_bar_view;
-    private static final int STATUSBARUTILS_NAVIGATION_BAR_VIEW = R.id.scaffold_navigation_bar_view;
+    private static final int STATUS_BAR_UTILS_NAVIGATION_BAR_VIEW = R.id.scaffold_navigation_bar_view;
     /**
      * 导航栏竖屏高度标识位
      */
@@ -90,7 +91,7 @@ public class StatusBarUtils {
 
     private static boolean supportTranslucent() {
         // Essential Phone 在 Android 8 之前沉浸式做得不全，系统不从状态栏顶部开始布局却会下发 WindowInsets
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !(RomUtils.isEssential() && Build.VERSION.SDK_INT < 26);
+        return !(RomUtils.isEssential() && Build.VERSION.SDK_INT < 26);
     }
 
     /**
@@ -197,7 +198,9 @@ public class StatusBarUtils {
      * @param activity 需要被处理的 Activity
      */
     public static boolean setStatusBarTextBlack(Activity activity) {
-        if (activity == null) return false;
+        if (activity == null) {
+            return false;
+        }
         // 无语系列：ZTK C2016只能时间和电池图标变色。。。。
         if (RomUtils.isZTKC2016()) {
             return false;
@@ -246,7 +249,9 @@ public class StatusBarUtils {
      * 支持 4.4 以上版本 MIUI 和 Flyme，以及 6.0 以上版本的其他 Android
      */
     public static boolean setStatusBarTextWhite(Activity activity) {
-        if (activity == null) return false;
+        if (activity == null) {
+            return false;
+        }
         if (mStatusBarType == STATUSBAR_TYPE_DEFAULT) {
             // 默认状态，不需要处理
             return true;
@@ -455,7 +460,7 @@ public class StatusBarUtils {
         sVirtualDensityDpi = densityDpi;
     }
 
-    @IntDef({STATUSBAR_TYPE_DEFAULT, STATUSBAR_TYPE_MIUI, STATUSBAR_TYPE_FLYME, STATUSBAR_TYPE_ANDROID6})
+    //@IntDef({STATUSBAR_TYPE_DEFAULT, STATUSBAR_TYPE_MIUI, STATUSBAR_TYPE_FLYME, STATUSBAR_TYPE_ANDROID6})
     @Retention(RetentionPolicy.SOURCE)
     private @interface StatusBarType {
     }
@@ -682,10 +687,10 @@ public class StatusBarUtils {
         } else {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             ViewGroup mDecorView = (ViewGroup) window.getDecorView();
-            View navigationBarView = mDecorView.findViewById(STATUSBARUTILS_NAVIGATION_BAR_VIEW);
+            View navigationBarView = mDecorView.findViewById(STATUS_BAR_UTILS_NAVIGATION_BAR_VIEW);
             if (navigationBarView == null) {
                 navigationBarView = new View(activity);
-                navigationBarView.setId(STATUSBARUTILS_NAVIGATION_BAR_VIEW);
+                navigationBarView.setId(STATUS_BAR_UTILS_NAVIGATION_BAR_VIEW);
                 mDecorView.addView(navigationBarView);
             }
             FrameLayout.LayoutParams params;
