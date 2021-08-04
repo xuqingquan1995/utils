@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity() {
 //        Timber.d("statusBarHeight=>"+StatusBarUtils.getStatusbarHeight(this))
         StatusBarUtils.setNavigationBackgroundColor(this,ContextCompat.getColor(this,R.color.black))
         StatusBarUtils.setNavigationIconDark(this,true)
+//        installAPK(this,File(""))
     }
 
     override fun onRequestPermissionsResult(

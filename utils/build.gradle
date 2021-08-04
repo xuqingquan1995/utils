@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'maven-publish'
 apply plugin: 'com.github.dcendents.android-maven'
 group='top.xuqingquan'
 
@@ -39,7 +39,6 @@ android {
 
 dependencies {
     compileOnly fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlin}"
     //noinspection GradleCompatible
     implementation 'androidx.appcompat:appcompat:1.2.0'
     //noinspection GradleCompatible
