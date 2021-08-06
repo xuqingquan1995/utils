@@ -61,6 +61,12 @@ class MainActivity : AppCompatActivity() {
         StatusBarUtils.setNavigationBackgroundColor(this,ContextCompat.getColor(this,R.color.black))
         StatusBarUtils.setNavigationIconDark(this,true)
 //        installAPK(this,File(""))
+        val compressForGzip = compressForGzip("test")
+        val base64Encode = EncryptUtils.base64Encode(compressForGzip)
+        Timber.d("base64=>${String(base64Encode)}")
+        val base64Decode = EncryptUtils.base64Decode(base64Encode)
+        val decompressForGzip = decompressForGzip(base64Decode)
+        Timber.d("decompressForGzip=$decompressForGzip")
     }
 
     override fun onRequestPermissionsResult(
