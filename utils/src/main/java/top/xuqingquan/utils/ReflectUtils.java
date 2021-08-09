@@ -11,7 +11,6 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -160,24 +159,20 @@ public final class ReflectUtils {
     }
 
     private void sortConstructors(List<Constructor<?>> list) {
-        //noinspection Convert2Lambda
-        Collections.sort(list, new Comparator<>() {
-            @Override
-            public int compare(Constructor<?> o1, Constructor<?> o2) {
-                Class<?>[] types1 = o1.getParameterTypes();
-                Class<?>[] types2 = o2.getParameterTypes();
-                int len = types1.length;
-                for (int i = 0; i < len; i++) {
-                    if (!types1[i].equals(types2[i])) {
-                        if (wrapper(types1[i]).isAssignableFrom(wrapper(types2[i]))) {
-                            return 1;
-                        } else {
-                            return -1;
-                        }
+        Collections.sort(list, (constructor, t1) -> {
+            Class<?>[] types1 = constructor.getParameterTypes();
+            Class<?>[] types2 = t1.getParameterTypes();
+            int len = types1.length;
+            for (int i = 0; i < len; i++) {
+                if (!types1[i].equals(types2[i])) {
+                    if (wrapper(types1[i]).isAssignableFrom(wrapper(types2[i]))) {
+                        return 1;
+                    } else {
+                        return -1;
                     }
                 }
-                return 0;
             }
+            return 0;
         });
     }
 
@@ -367,24 +362,20 @@ public final class ReflectUtils {
     }
 
     private void sortMethods(final List<Method> methods) {
-        //noinspection Convert2Lambda
-        Collections.sort(methods, new Comparator<>() {
-            @Override
-            public int compare(Method o1, Method o2) {
-                Class<?>[] types1 = o1.getParameterTypes();
-                Class<?>[] types2 = o2.getParameterTypes();
-                int len = types1.length;
-                for (int i = 0; i < len; i++) {
-                    if (!types1[i].equals(types2[i])) {
-                        if (wrapper(types1[i]).isAssignableFrom(wrapper(types2[i]))) {
-                            return 1;
-                        } else {
-                            return -1;
-                        }
+        Collections.sort(methods, (o1, o2) -> {
+            Class<?>[] types1 = o1.getParameterTypes();
+            Class<?>[] types2 = o2.getParameterTypes();
+            int len = types1.length;
+            for (int i = 0; i < len; i++) {
+                if (!types1[i].equals(types2[i])) {
+                    if (wrapper(types1[i]).isAssignableFrom(wrapper(types2[i]))) {
+                        return 1;
+                    } else {
+                        return -1;
                     }
                 }
-                return 0;
             }
+            return 0;
         });
     }
 
