@@ -65,5 +65,5 @@ fun getIMEI(context: Context): String? {
 }
 
 fun getAndroidID(context: Context): String {
-    return Settings.System.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+    return Settings.System.getString(context.contentResolver, Settings.Secure.ANDROID_ID) ?: ""
 }
