@@ -2,8 +2,8 @@
 
 package top.xuqingquan.utils
 
+import android.Manifest
 import android.annotation.SuppressLint
-import androidx.lifecycle.MutableLiveData
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
@@ -13,6 +13,7 @@ import android.os.Build
 import android.telephony.TelephonyManager
 import android.text.TextUtils
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
@@ -110,7 +111,8 @@ fun getIPAddress(useIPv4: Boolean): String {
                 continue
             }
             if (!add.isLoopbackAddress) {
-                val hostAddress: String = add.hostAddress
+                val hostAddress = add.hostAddress
+                hostAddress ?: return "0.0.0.0"
                 val isIPv4 = hostAddress.indexOf(':') < 0
                 if (useIPv4) {
                     if (isIPv4) return hostAddress
@@ -118,9 +120,9 @@ fun getIPAddress(useIPv4: Boolean): String {
                     if (!isIPv4) {
                         val index = hostAddress.indexOf('%')
                         return if (index < 0) {
-                            hostAddress.toUpperCase(Locale.getDefault())
+                            hostAddress.uppercase(Locale.getDefault())
                         } else {
-                            hostAddress.substring(0, index).toUpperCase(Locale.getDefault())
+                            hostAddress.substring(0, index).uppercase(Locale.getDefault())
                         }
                     }
                 }
@@ -157,12 +159,14 @@ fun getMacAddress(context: Context): String {
         if (info == null) {
             return mac
         }
-        @SuppressLint("HardwareIds")
-        if (info.macAddress.isNullOrEmpty()) {
-            return mac
+        if (hasPermission(context,Manifest.permission.ACCESS_FINE_LOCATION)){
+            @SuppressLint("HardwareIds","MissingPermission")
+            if (info.macAddress.isNullOrEmpty()) {
+                return mac
+            }
         }
         if (!TextUtils.isEmpty(mac)) {
-            mac = mac.toUpperCase(Locale.getDefault())
+            mac = mac.uppercase(Locale.getDefault())
         }
         return mac
     }

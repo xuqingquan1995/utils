@@ -59,37 +59,24 @@ fun getForegroundProcessName(context: Context): String {
         try { // Access to usage information.
             val info = pm.getApplicationInfo(context.packageName, 0)
             val aom = ContextCompat.getSystemService(context, AppOpsManager::class.java)
-            if (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    aom?.unsafeCheckOpNoThrow(
-                        AppOpsManager.OPSTR_GET_USAGE_STATS,
-                        info.uid,
-                        info.packageName
-                    ) != AppOpsManager.MODE_ALLOWED
-                } else {
-                    aom?.checkOpNoThrow(
-                        AppOpsManager.OPSTR_GET_USAGE_STATS,
-                        info.uid,
-                        info.packageName
-                    ) != AppOpsManager.MODE_ALLOWED
-                }
-            ) {
+            val check = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                aom?.unsafeCheckOpNoThrow(
+                    AppOpsManager.OPSTR_GET_USAGE_STATS,
+                    info.uid,
+                    info.packageName
+                ) != AppOpsManager.MODE_ALLOWED
+            } else {
+                aom?.checkOpNoThrow(
+                    AppOpsManager.OPSTR_GET_USAGE_STATS,
+                    info.uid,
+                    info.packageName
+                ) != AppOpsManager.MODE_ALLOWED
+            }
+            if (check) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
             }
-            if (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    aom?.unsafeCheckOpNoThrow(
-                            AppOpsManager.OPSTR_GET_USAGE_STATS,
-                            info.uid,
-                            info.packageName
-                        ) != AppOpsManager.MODE_ALLOWED
-                } else {
-                    aom?.checkOpNoThrow(
-                        AppOpsManager.OPSTR_GET_USAGE_STATS,
-                        info.uid,
-                        info.packageName
-                    ) != AppOpsManager.MODE_ALLOWED
-                }
-            ) {
+            if (check) {
                 Timber.i("getForegroundProcessName: refuse to device usage stats.")
                 return ""
             }

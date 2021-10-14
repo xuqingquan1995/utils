@@ -2,6 +2,7 @@
 
 package top.xuqingquan.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Build
@@ -172,6 +173,7 @@ fun uriToPath(context: Context?, uri: Uri?): String? {
  * 在Android 10 上可以解决无法从file上拿到真实文件的问题
  * 只拿Uri去处理
  */
+@SuppressLint("Range")
 fun getFileMediaUrl(context: Context, uri: Uri): Uri? {
     if (uri.scheme != "file") {
         return uri
