@@ -1,4 +1,5 @@
 @file:JvmName("ZipHelper")
+
 package top.xuqingquan.utils
 
 import java.io.ByteArrayInputStream
@@ -28,7 +29,7 @@ fun closeQuietly(closeable: Closeable?) {
  * @return result
  */
 fun decompressForZlib(bytesToDecompress: ByteArray): ByteArray? {
-    val returnValues: ByteArray? = null
+    var returnValues: ByteArray? = null
     val inflater = Inflater()
     val numberOfBytesToDecompress = bytesToDecompress.size
     inflater.setInput(bytesToDecompress, 0, numberOfBytesToDecompress)
@@ -41,6 +42,7 @@ fun decompressForZlib(bytesToDecompress: ByteArray): ByteArray? {
                 bytesDecompressedSoFar.add(bytesDecompressedBuffer[b])
             }
         }
+        returnValues = bytesDecompressedSoFar.toByteArray()
     } catch (t: Throwable) {
         t.printStackTrace()
     }
