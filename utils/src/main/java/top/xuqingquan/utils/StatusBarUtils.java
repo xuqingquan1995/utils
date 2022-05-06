@@ -37,6 +37,8 @@ import java.util.Objects;
  * {@link #setStatusBarTextWhite 可以将statusbar的文字设置成白色}
  * {@link #isFullScreen 判断是否全屏}
  * {@link #getStatusbarHeight 获取状态栏高度}
+ * {@link #getNavigationBarHeight 获取导航栏高度}
+ * {@link #hasNavigationBar 判断是否有导航栏}
  * {@link #setStatusBarBackgroundColor 可以设置状态栏颜色}
  * {@link #setNavigationBackgroundColor 可以设置导航栏颜色}
  * {@link #showhideBar 控制导航栏和状态栏的显示和隐藏}
@@ -586,7 +588,7 @@ public class StatusBarUtils {
     /**
      * 获取导航栏高度
      */
-    private static int getNavigationBarHeight(Activity activity) {
+    public static int getNavigationBarHeight(Activity activity) {
         int result = 0;
         if (hasNavBar(activity)) {
             String key;
