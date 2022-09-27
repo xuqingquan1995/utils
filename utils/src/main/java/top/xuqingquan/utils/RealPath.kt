@@ -64,14 +64,17 @@ private fun getDataColumn(
     selection: String?,
     selectionArgs: Array<String>?
 ): String? {
-    @Suppress("DEPRECATION") val column = MediaStore.Images.Media.DATA
-    val projection = arrayOf(column)
-    val cursor = context.contentResolver.query(uri, projection, selection, selectionArgs, null)
-    if (cursor != null && cursor.moveToFirst()) {
-        val index = cursor.getColumnIndexOrThrow(column)
-        val result = cursor.getString(index)
-        cursor.close()
-        return result
+    try {
+        @Suppress("DEPRECATION") val column = MediaStore.Images.Media.DATA
+        val projection = arrayOf(column)
+        val cursor = context.contentResolver.query(uri, projection, selection, selectionArgs, null)
+        if (cursor != null && cursor.moveToFirst()) {
+            val index = cursor.getColumnIndex(column)
+            val result = cursor.getString(index)
+            cursor.close()
+            return result
+        }
+    } catch (_: Throwable) {
     }
     return null
 }
