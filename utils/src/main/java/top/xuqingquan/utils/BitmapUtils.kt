@@ -30,22 +30,15 @@ fun view2Bitmap(view: View?): Bitmap? {
     if (view == null) {
         return null
     }
-    //获取view的长宽
-    val width = view.measuredWidth
-    val height = view.measuredHeight
-    //若传入的view长或宽为小于等于0，则返回，不生成图片
-    if (width <= 0 || height <= 0) {
-        return null
-    }
-    //生成一个ARGB8888的bitmap，宽度和高度为传入view的宽高
-    val bm = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888) ?: return null
-    //根据bitmap生成一个画布
-    val canvas = Canvas(bm)
-    //注意：这里是解决图片透明度问题，给底色上白色，若存储时保存的为png格式的图，则无需此步骤
-    canvas.drawColor(Color.WHITE)
-    //手动将这个视图渲染到指定的画布上
+    view.measure(
+        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+    )
+    view.layout(0, 0, view.measuredWidth, view.measuredHeight)
+    val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
     view.draw(canvas)
-    return bm
+    return bitmap
 }
 
 /**
@@ -64,12 +57,12 @@ fun bitmap2File(context: Context?, bmp: Bitmap): File? {
         dirFile.mkdirs()
     }
     // 在SDcard的目录下创建图片文,以当前时间为其命名，注意文件后缀，若生成为JPEG则为.jpg,若为PNG则为.png
-    val file = File(sdCardDir, System.currentTimeMillis().toString() + ".jpg")
+    val file = File(sdCardDir, System.currentTimeMillis().toString() + ".png")
     var out: FileOutputStream? = null
     try {
         out = FileOutputStream(file)
         //将bitmap（数值100表示不压缩）存储到out输出流中去，图片格式为JPEG
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, out)
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, out)
         //bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
     } catch (e: Throwable) {
         e.printStackTrace()
@@ -77,6 +70,7 @@ fun bitmap2File(context: Context?, bmp: Bitmap): File? {
     try {
         out!!.flush()
         out.close()
+        bmp.recycle()
     } catch (e: Throwable) {
         e.printStackTrace()
     }
