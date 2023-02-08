@@ -5,20 +5,30 @@ package top.xuqingquan.utils
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Point
 import android.os.Build
 import android.provider.Settings
-import androidx.annotation.RequiresPermission
-import androidx.core.content.ContextCompat
 import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
+import android.view.WindowManager
+import androidx.annotation.RequiresPermission
+import androidx.core.content.ContextCompat
 
 /**
  * @author 许清泉 on 2019-04-29 23:28
  */
-
-//获取屏幕相关参数
-fun getDisplayMetrics(context: Context): DisplayMetrics {
-    return context.resources.displayMetrics
+fun getScreenSize(context: Context):Point{
+    val windowManager = ContextCompat.getSystemService(context, WindowManager::class.java)?:return Point(0,0)
+    return if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
+        val metrics = windowManager.currentWindowMetrics
+        val bounds = metrics.bounds
+        Point(bounds.width(),bounds.height())
+    }else{
+        val display = windowManager.defaultDisplay
+        val out = Point()
+        display.getRealSize(out)
+        out
+    }
 }
 
 /**
@@ -28,7 +38,7 @@ fun getDisplayMetrics(context: Context): DisplayMetrics {
  * @return
  */
 fun getScreenHeight(context: Context): Int {
-    return getDisplayMetrics(context).heightPixels
+    return getScreenSize(context).x
 }
 
 /**
@@ -38,7 +48,7 @@ fun getScreenHeight(context: Context): Int {
  * @return
  */
 fun getScreenWidth(context: Context): Int {
-    return getDisplayMetrics(context).widthPixels
+    return getScreenSize(context).y
 }
 
 /**
