@@ -38,7 +38,7 @@ fun getScreenSize(context: Context):Point{
  * @return
  */
 fun getScreenHeight(context: Context): Int {
-    return getScreenSize(context).x
+    return getScreenSize(context).y
 }
 
 /**
@@ -48,7 +48,7 @@ fun getScreenHeight(context: Context): Int {
  * @return
  */
 fun getScreenWidth(context: Context): Int {
-    return getScreenSize(context).y
+    return getScreenSize(context).x
 }
 
 /**
