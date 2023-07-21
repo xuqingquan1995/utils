@@ -3,4 +3,5 @@
     <external-path name="external_files" path="."/>
     <external-cache-path name="cache_download" path="download"/>
     <external-cache-path name="web_files" path="web-cache"/>
+    <root-path name="root_path" path="."/>
 </paths>
