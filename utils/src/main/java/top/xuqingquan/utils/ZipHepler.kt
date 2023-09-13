@@ -4,7 +4,6 @@ package top.xuqingquan.utils
 
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.Closeable
 import java.nio.charset.Charset
 import java.util.zip.Deflater
 import java.util.zip.GZIPInputStream

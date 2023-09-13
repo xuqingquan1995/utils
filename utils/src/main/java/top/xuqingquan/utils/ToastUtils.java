@@ -8,6 +8,8 @@ import android.os.Message;
 import android.view.Gravity;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import java.lang.reflect.Field;
 
 /**
@@ -19,6 +21,7 @@ import java.lang.reflect.Field;
  * </p>
  * @noinspection unused
  */
+@SuppressLint("DiscouragedPrivateApi")
 public class ToastUtils {
 
     private static Toast mToast;
@@ -28,6 +31,7 @@ public class ToastUtils {
     static {
         if (Build.VERSION.SDK_INT == 25) {
             try {
+                //noinspection JavaReflectionMemberAccess
                 mFieldTN = Toast.class.getDeclaredField("mTN");
                 mFieldTN.setAccessible(true);
                 mFieldTNHandler = mFieldTN.getType().getDeclaredField("mHandler");
@@ -178,12 +182,13 @@ public class ToastUtils {
     private static class FiexHandler extends Handler {
         private final Handler impl;
 
+        /** @noinspection deprecation*/
         private FiexHandler(Handler impl) {
             this.impl = impl;
         }
 
         @Override
-        public void dispatchMessage(Message msg) {
+        public void dispatchMessage(@NonNull Message msg) {
             try {
                 super.dispatchMessage(msg);
             } catch (Exception e) {
@@ -192,7 +197,7 @@ public class ToastUtils {
         }
 
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage(@NonNull Message msg) {
             impl.handleMessage(msg);
         }
     }

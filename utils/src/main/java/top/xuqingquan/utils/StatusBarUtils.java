@@ -9,19 +9,19 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.provider.Settings;
-import androidx.annotation.ColorInt;
-import androidx.annotation.IntDef;
-import androidx.annotation.IntRange;
-import androidx.core.view.ViewCompat;
 import android.util.DisplayMetrics;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
+import androidx.annotation.ChecksSdkIntAtLeast;
+import androidx.annotation.ColorInt;
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -43,8 +43,8 @@ import java.util.Objects;
  * {@link #setNavigationBackgroundColor 可以设置导航栏颜色}
  * {@link #showhideBar 控制导航栏和状态栏的显示和隐藏}
  * {@link #setNavigationIconDark 设置导航栏图标是否为暗色}
+ * @noinspection unused
  */
-@SuppressWarnings({"unused", "WeakerAccess", "RedundantSuppression", "deprecation"})
 public class StatusBarUtils {
 
     private final static int STATUSBAR_TYPE_DEFAULT = 0;
@@ -108,7 +108,6 @@ public class StatusBarUtils {
         translucent(window, colorOn5x);
     }
 
-    @TargetApi(19)
     public static void translucent(Window window, @ColorInt int colorOn5x) {
         if (!supportTranslucent()) {
             // 版本小于4.4，绝对不考虑沉浸式
@@ -127,27 +126,26 @@ public class StatusBarUtils {
             return;
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int systemUiVisibility = window.getDecorView().getSystemUiVisibility();
-            systemUiVisibility |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-            window.getDecorView().setSystemUiVisibility(systemUiVisibility);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && supportTransclentStatusBar6()) {
-                // android 6以后可以改状态栏字体颜色，因此可以自行设置为透明
-                // ZUK Z1是个另类，自家应用可以实现字体颜色变色，但没开放接口
-                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(Color.TRANSPARENT);
-            } else {
-                // android 5不能修改状态栏字体颜色，因此直接用FLAG_TRANSLUCENT_STATUS，nexus表现为半透明
-                // 魅族和小米的表现如何？
-                // update: 部分手机运用FLAG_TRANSLUCENT_STATUS时背景不是半透明而是没有背景了。。。。。
+        int systemUiVisibility = window.getDecorView().getSystemUiVisibility();
+        systemUiVisibility |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+        window.getDecorView().setSystemUiVisibility(systemUiVisibility);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && supportTransclentStatusBar6()) {
+            // android 6以后可以改状态栏字体颜色，因此可以自行设置为透明
+            // ZUK Z1是个另类，自家应用可以实现字体颜色变色，但没开放接口
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.TRANSPARENT);
+        } else {
+            // android 5不能修改状态栏字体颜色，因此直接用FLAG_TRANSLUCENT_STATUS，nexus表现为半透明
+            // 魅族和小米的表现如何？
+            // update: 部分手机运用FLAG_TRANSLUCENT_STATUS时背景不是半透明而是没有背景了。。。。。
 //                window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-                // 采取setStatusBarColor的方式，部分机型不支持，那就纯黑了，保证状态栏图标可见
-                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(colorOn5x);
-            }
+            // 采取setStatusBarColor的方式，部分机型不支持，那就纯黑了，保证状态栏图标可见
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(colorOn5x);
+        }
 //        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 //            // android4.4的默认是从上到下黑到透明，我们的背景是白色，很难看，因此只做魅族和小米的
 //        } else if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1){
@@ -157,29 +155,26 @@ public class StatusBarUtils {
 //            if(transparentValue != null) {
 //                window.getDecorView().setSystemUiVisibility(transparentValue);
 //            }
-        }
     }
 
     @TargetApi(28)
     private static void handleDisplayCutoutMode(final Window window) {
         View decorView = window.getDecorView();
-        if (decorView != null) {
-            if (ViewCompat.isAttachedToWindow(decorView)) {
-                realHandleDisplayCutoutMode(window, decorView);
-            } else {
-                decorView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-                    @Override
-                    public void onViewAttachedToWindow(View v) {
-                        v.removeOnAttachStateChangeListener(this);
-                        realHandleDisplayCutoutMode(window, v);
-                    }
+        if (ViewCompat.isAttachedToWindow(decorView)) {
+            realHandleDisplayCutoutMode(window, decorView);
+        } else {
+            decorView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(@NonNull View v) {
+                    v.removeOnAttachStateChangeListener(this);
+                    realHandleDisplayCutoutMode(window, v);
+                }
 
-                    @Override
-                    public void onViewDetachedFromWindow(View v) {
+                @Override
+                public void onViewDetachedFromWindow(@NonNull View v) {
 
-                    }
-                });
-            }
+                }
+            });
         }
     }
 
@@ -326,7 +321,7 @@ public class StatusBarUtils {
 
     /**
      * 更改状态栏图标、文字颜色的方案是否是MIUI自家的， MIUI9 && Android 6 之后用回Android原生实现
-     * 见小米开发文档说明：https://dev.mi.com/console/doc/detail?pId=1159
+     * 见：<a href="https://dev.mi.com/console/doc/detail?pId=1159">小米开发文档</a>说明
      */
     private static boolean isMIUICustomStatusBarLightModeImpl() {
         if (RomUtils.isMIUIV9() && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -467,6 +462,7 @@ public class StatusBarUtils {
     }
 
 
+    @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.P)
     private static boolean isNotchOfficialSupport() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
     }
@@ -681,31 +677,9 @@ public class StatusBarUtils {
             return;
         }
         Window window = activity.getWindow();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setNavigationBarColor(color);
-        } else {
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            ViewGroup mDecorView = (ViewGroup) window.getDecorView();
-            View navigationBarView = mDecorView.findViewById(STATUS_BAR_UTILS_NAVIGATION_BAR_VIEW);
-            if (navigationBarView == null) {
-                navigationBarView = new View(activity);
-                navigationBarView.setId(STATUS_BAR_UTILS_NAVIGATION_BAR_VIEW);
-                mDecorView.addView(navigationBarView);
-            }
-            FrameLayout.LayoutParams params;
-            if (getSmallestWidthDp(activity) >= 600 || inPortrait(activity)) {
-                params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, getNavigationBarHeight(activity));
-                params.gravity = Gravity.BOTTOM;
-            } else {
-                params = new FrameLayout.LayoutParams(getNavigationBarWidth(activity), FrameLayout.LayoutParams.MATCH_PARENT);
-                params.gravity = Gravity.END;
-            }
-            navigationBarView.setLayoutParams(params);
-            navigationBarView.setBackgroundColor(calculateStatusColor(color, alpha));
-            navigationBarView.setVisibility(View.VISIBLE);
-        }
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setNavigationBarColor(color);
     }
 
     private static float getSmallestWidthDp(Activity activity) {

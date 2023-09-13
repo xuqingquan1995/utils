@@ -9,7 +9,6 @@ import android.graphics.Point
 import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
-import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat

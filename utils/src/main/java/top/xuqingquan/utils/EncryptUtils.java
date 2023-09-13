@@ -1,5 +1,6 @@
 package top.xuqingquan.utils;
 
+import android.os.Build;
 import android.util.Base64;
 
 import java.io.File;
@@ -31,6 +32,7 @@ import javax.crypto.spec.SecretKeySpec;
  *     desc  : utils about encrypt
  *     link  : https://github.com/Blankj/AndroidUtilCode/blob/master/utilcode/lib/src/main/java/com/blankj/utilcode/util/EncryptUtils.java
  * </pre>
+ *
  * @noinspection unused
  */
 public final class EncryptUtils {
@@ -365,7 +367,7 @@ public final class EncryptUtils {
      * @return the bytes of hash encryption
      */
     private static byte[] hashTemplate(final byte[] data, final String algorithm) {
-        if (data == null || data.length <= 0) return null;
+        if (data == null || data.length == 0) return null;
         try {
             MessageDigest md = MessageDigest.getInstance(algorithm);
             md.update(data);
@@ -1085,12 +1087,18 @@ public final class EncryptUtils {
         }
         try {
             Key rsaKey;
+            KeyFactory keyFactory;
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                keyFactory = KeyFactory.getInstance("RSA", "BC");
+            } else {
+                keyFactory = KeyFactory.getInstance("RSA");
+            }
             if (isEncrypt) {
                 X509EncodedKeySpec keySpec = new X509EncodedKeySpec(key);
-                rsaKey = KeyFactory.getInstance("RSA").generatePublic(keySpec);
+                rsaKey = keyFactory.generatePublic(keySpec);
             } else {
                 PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(key);
-                rsaKey = KeyFactory.getInstance("RSA").generatePrivate(keySpec);
+                rsaKey = keyFactory.generatePrivate(keySpec);
             }
             if (rsaKey == null) return null;
             Cipher cipher = Cipher.getInstance(transformation);
@@ -1206,7 +1214,7 @@ public final class EncryptUtils {
         if (bytes == null) return "";
         char[] hexDigits = isUpperCase ? HEX_DIGITS_UPPER : HEX_DIGITS_LOWER;
         int len = bytes.length;
-        if (len <= 0) return "";
+        if (len == 0) return "";
         char[] ret = new char[len << 1];
         for (int i = 0, j = 0; i < len; i++) {
             ret[j++] = hexDigits[bytes[i] >> 4 & 0x0f];

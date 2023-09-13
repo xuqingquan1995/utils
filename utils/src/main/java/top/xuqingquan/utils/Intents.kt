@@ -4,13 +4,11 @@ package top.xuqingquan.utils
 
 import android.annotation.SuppressLint
 import android.app.Activity
-
 import android.app.Service
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import androidx.fragment.app.Fragment
 
 inline fun <reified T: Activity> Context.startActivity(vararg params: Pair<String, Any?>) =
@@ -63,12 +61,7 @@ fun Intent.clearTop(): Intent = apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
  * @return the same intent with the flag applied.
  */
 fun Intent.newDocument(): Intent = apply {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
-    } else {
-        @Suppress("DEPRECATION")
-        addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-    }
+    addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
 }
 
 /**
@@ -117,33 +110,33 @@ inline fun Intent.singleTop(): Intent = apply { addFlags(Intent.FLAG_ACTIVITY_SI
 inline fun Fragment.browse(url: String, newTask: Boolean = false) = activity?.browse(url, newTask)
 
 fun Context.browse(url: String, newTask: Boolean = false): Boolean {
-    try {
+    return try {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(url)
         if (newTask) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         startActivity(intent)
-        return true
+        true
     } catch (e: ActivityNotFoundException) {
         e.printStackTrace()
-        return false
+        false
     }
 }
 
 inline fun Fragment.share(text: String, subject: String = "") = activity?.share(text, subject)
 
 fun Context.share(text: String, subject: String = ""): Boolean {
-    try {
-        val intent = Intent(android.content.Intent.ACTION_SEND)
+    return try {
+        val intent = Intent(Intent.ACTION_SEND)
         intent.type = "text/plain"
-        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject)
-        intent.putExtra(android.content.Intent.EXTRA_TEXT, text)
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject)
+        intent.putExtra(Intent.EXTRA_TEXT, text)
         startActivity(Intent.createChooser(intent, null))
-        return true
+        true
     } catch (e: ActivityNotFoundException) {
         e.printStackTrace()
-        return false
+        false
     }
 }
 
@@ -170,13 +163,13 @@ inline fun Fragment.makeCall(number: String): Boolean = activity?.makeCall(numbe
 
 @SuppressLint("MissingPermission")
 fun Context.makeCall(number: String): Boolean {
-    try {
+    return try {
         val intent = Intent(Intent.ACTION_CALL, Uri.parse("tel:$number"))
         startActivity(intent)
-        return true
+        true
     } catch (e: Exception) {
         e.printStackTrace()
-        return false
+        false
     }
 }
 
@@ -184,13 +177,13 @@ inline fun Fragment.sendSMS(number: String, text: String = ""): Boolean =
     activity?.sendSMS(number, text)?:false
 
 fun Context.sendSMS(number: String, text: String = ""): Boolean {
-    try {
+    return try {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:$number"))
         intent.putExtra("sms_body", text)
         startActivity(intent)
-        return true
+        true
     } catch (e: Exception) {
         e.printStackTrace()
-        return false
+        false
     }
 }

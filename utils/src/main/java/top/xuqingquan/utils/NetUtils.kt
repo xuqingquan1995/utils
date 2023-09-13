@@ -172,7 +172,7 @@ fun getMacAddress(context: Context): String {
         var info: WifiInfo? = null
         try {
             info = wifi.connectionInfo
-        } catch (e: Exception) {
+        } catch (_: Exception) {
         }
         if (info == null) {
             return mac

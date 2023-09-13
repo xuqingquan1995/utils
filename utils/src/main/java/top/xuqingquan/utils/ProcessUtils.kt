@@ -92,7 +92,7 @@ fun getForegroundProcessName(context: Context): String {
                         beginTime, endTime
                     )
             }
-            if (usageStatsList == null || usageStatsList.isEmpty()) return ""
+            if (usageStatsList.isNullOrEmpty()) return ""
             var recentStats: UsageStats? = null
             for (usageStats in usageStatsList) {
                 if (recentStats == null

@@ -31,7 +31,7 @@ public class CharacterUtils {
      */
     public static final InputFilter EMOJI_FILTER = new InputFilter() {
         final Pattern emoji = Pattern.compile(
-                "[\ud83c\udc00-\ud83c\udfff]|[\u2600-\u27ff]",
+                "[\ud83c\udc00-\ud83c\udfff]|[☀-⟿]",
                 Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
 
         @Override

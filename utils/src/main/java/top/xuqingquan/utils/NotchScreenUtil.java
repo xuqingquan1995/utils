@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
  * 适配了华为、oppo、小米、vivo
  *
  * @author 许清泉
+ * @noinspection unused
  */
 public class NotchScreenUtil {
 
@@ -97,7 +98,7 @@ public class NotchScreenUtil {
             Object[] params = new Object[2];
             params[0] = "ro.miui.notch";
             params[1] = 0;
-            //noinspection ConstantConditions
+            //noinspection DataFlowIssue
             result = (Integer) getInt.invoke(systemProperties, params);
             return result == 1;
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -118,7 +119,7 @@ public class NotchScreenUtil {
             ClassLoader cl = context.getClassLoader();
             Class<?> hwNotchSizeUtil = cl.loadClass("com.huawei.android.util.HwNotchSizeUtil");
             Method get = hwNotchSizeUtil.getMethod("hasNotchInScreen");
-            //noinspection ConstantConditions
+            //noinspection DataFlowIssue
             ret = (boolean) get.invoke(hwNotchSizeUtil);
         } catch (ClassNotFoundException e) {
             Timber.e("hasNotchInScreen ClassNotFoundException");
@@ -137,7 +138,6 @@ public class NotchScreenUtil {
      * @param context Context
      * @return true：是刘海屏；false：非刘海屏
      */
-    @SuppressWarnings({"ConstantConditions", "JavaReflectionInvocation"})
     private static boolean checkVivo(Context context) {
         boolean ret;
         try {
@@ -145,6 +145,7 @@ public class NotchScreenUtil {
             @SuppressLint("PrivateApi")
             Class<?> ftFeature = cl.loadClass("android.util.FtFeature");
             Method isFeatureSupport = ftFeature.getMethod("isFeatureSupport");
+            //noinspection DataFlowIssue,JavaReflectionInvocation
             ret = (boolean) isFeatureSupport.invoke(ftFeature, FLAG_NOTCH_SUPPORT_VIVO);
         } catch (Exception e) {
             e.printStackTrace();

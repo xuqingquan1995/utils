@@ -191,8 +191,8 @@ class Timber private constructor() {
          *
          * @param priority Log level. See [Log] for constants.
          * @param tag Explicit or inferred tag. May be `null`.
-         * @param message Formatted log message. May be `null`, but then `t` will not be.
-         * @param t Accompanying exceptions. May be `null`, but then `message` will not be.
+         * @param message Formatted log message. May be `null`.
+         * @param t Accompanying exceptions. May be `null`.
          */
         protected abstract fun log(priority: Int, tag: String?, message: String, t: Throwable?)
     }
@@ -224,8 +224,8 @@ class Timber private constructor() {
             if (m.find()) {
                 tag = m.replaceAll("")
             }
-            // Tag length limit was removed in API 24.
-            return if (tag.length <= MAX_TAG_LENGTH || Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            // Tag length limit was removed in API 26.
+            return if (tag.length <= MAX_TAG_LENGTH || Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 tag
             } else {
                 tag.substring(0, MAX_TAG_LENGTH)
