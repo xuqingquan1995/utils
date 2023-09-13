@@ -13,7 +13,7 @@ import java.util.regex.Pattern
  * @author 许清泉 on 2019/4/15 23:38
  */
 /** Logging for lazy people. */
-@Suppress("DEPRECATION", "NAME_SHADOWING", "CYCLIC_SCOPES_WITH_COMPANION", "RemoveRedundantQualifierName",
+@Suppress("DEPRECATION", "NAME_SHADOWING", "RemoveRedundantQualifierName",
     "RedundantRequireNotNullCall", "unused", "ReplaceJavaStaticMethodWithKotlinAnalog"
 )
 class Timber private constructor() {

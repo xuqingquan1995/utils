@@ -26,11 +26,12 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * <pre>
  *     author: Blankj
- *     blog  : http://blankj.com
+ *     blog  : <a href="http://blankj.com">http://blankj.com</a>
  *     time  : 2016/08/02
  *     desc  : utils about encrypt
  *     link  : https://github.com/Blankj/AndroidUtilCode/blob/master/utilcode/lib/src/main/java/com/blankj/utilcode/util/EncryptUtils.java
  * </pre>
+ * @noinspection unused
  */
 public final class EncryptUtils {
 

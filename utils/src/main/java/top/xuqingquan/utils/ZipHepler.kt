@@ -15,12 +15,6 @@ import java.util.zip.Inflater
  * @author 许清泉 xuqingquan1995@gmail.com
  * @since 2021/8/6-17:00
  */
-fun closeQuietly(closeable: Closeable?) {
-    try {
-        closeable?.close()
-    } catch (ignored: Throwable) {
-    }
-}
 
 /**
  * zlib decompress 2 byte
@@ -129,8 +123,8 @@ fun compressForGzip(bytesToCompress: ByteArray): ByteArray? {
     } catch (t: Throwable) {
         t.printStackTrace()
     } finally {
-        closeQuietly(bis)
-        closeQuietly(gos)
+        closeIO(bis)
+        closeIO(gos)
     }
     return bos?.toByteArray()
 }
@@ -169,8 +163,8 @@ fun decompressForGzip(compressed: ByteArray, charsetName: Charset): String? {
     } catch (e: Throwable) {
         e.printStackTrace()
     } finally {
-        closeQuietly(gis)
-        closeQuietly(bis)
+        closeIO(gis)
+        closeIO(bis)
     }
     return null
 }

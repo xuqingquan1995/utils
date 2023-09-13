@@ -22,7 +22,6 @@ fun copyTextToBoard(context: Context, string: String, lable: String? = null) {
     }
     val clip =
         ContextCompat.getSystemService(context.applicationContext, ClipboardManager::class.java)
-    @Suppress("UsePropertyAccessSyntax")
     clip?.setPrimaryClip(ClipData.newPlainText(lable, string))
 }
 

@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Environment;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import android.text.TextUtils;
 
 import java.io.BufferedReader;
@@ -22,7 +24,7 @@ import java.util.regex.Pattern;
 /**
  * <pre>
  *     author: Blankj
- *     blog  : http://blankj.com
+ *     blog  : <a href="http://blankj.com">http://blankj.com</a>
  *     time  : 2018/07/04
  *     desc  : utils about rom
  * </pre>
@@ -47,7 +49,7 @@ public final class RomUtils {
     private static final String[] ROM_SAMSUNG = {"samsung"};
     private static final String[] ROM_MEIZU = {"meizu"};
     private static final String[] ROM_LENOVO = {"lenovo"};
-    private static final String[] ROM_SMARTISAN = {"smartisan"};
+    private static final String[] ROM_SMARTISAN = {"smartisan", "deltainno"};
     private static final String[] ROM_HTC = {"htc"};
     private static final String[] ROM_SONY = {"sony"};
     private static final String[] ROM_GIONEE = {"gionee", "amigo"};
@@ -262,7 +264,7 @@ public final class RomUtils {
     }
 
     /**
-     * Return whether the rom is made by motorola.
+     * Return whether the rom is made by Essential.
      *
      * @return {@code true}: yes<br>{@code false}: no
      */

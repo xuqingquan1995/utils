@@ -38,25 +38,43 @@ fun checkNetworkType(ctx: Context): Int {
     return when (networkInfo.type) {
         ConnectivityManager.TYPE_WIFI, ConnectivityManager.TYPE_WIMAX, ConnectivityManager.TYPE_ETHERNET -> 1
         ConnectivityManager.TYPE_MOBILE -> when (networkInfo.subtype) {
-            TelephonyManager.NETWORK_TYPE_LTE  // 4G
-                , TelephonyManager.NETWORK_TYPE_HSPAP, TelephonyManager.NETWORK_TYPE_EHRPD -> 2
-            TelephonyManager.NETWORK_TYPE_UMTS // 3G
-                , TelephonyManager.NETWORK_TYPE_CDMA, TelephonyManager.NETWORK_TYPE_EVDO_0, TelephonyManager.NETWORK_TYPE_EVDO_A, TelephonyManager.NETWORK_TYPE_EVDO_B -> 3
-            TelephonyManager.NETWORK_TYPE_GPRS // 2G
-                , TelephonyManager.NETWORK_TYPE_EDGE -> 4
+            TelephonyManager.NETWORK_TYPE_GPRS, // 2G
+            TelephonyManager.NETWORK_TYPE_EDGE,
+            TelephonyManager.NETWORK_TYPE_CDMA,
+            TelephonyManager.NETWORK_TYPE_1xRTT,
+            TelephonyManager.NETWORK_TYPE_IDEN, -> 2
+
+            TelephonyManager.NETWORK_TYPE_UMTS, // 3G
+            TelephonyManager.NETWORK_TYPE_EVDO_0,
+            TelephonyManager.NETWORK_TYPE_EVDO_A,
+            TelephonyManager.NETWORK_TYPE_EVDO_B,
+            TelephonyManager.NETWORK_TYPE_HSDPA,
+            TelephonyManager.NETWORK_TYPE_HSUPA,
+            TelephonyManager.NETWORK_TYPE_EHRPD,
+            TelephonyManager.NETWORK_TYPE_HSPAP,
+            TelephonyManager.NETWORK_TYPE_HSPA, -> 3
+
+            TelephonyManager.NETWORK_TYPE_LTE,  // 4G
+            19,// 19 对应的是 NETWORK_TYPE_LTE_CA，被标记为 hide 了，所以直接使用 19 判断
+            TelephonyManager.NETWORK_TYPE_IWLAN,
+            -> 4
+
+            TelephonyManager.NETWORK_TYPE_NR -> 5
             else -> netType
         }
+
         else -> netType
     }
 }
 
 fun checkNetworkTypeStr(ctx: Context): String {
-    return when (checkNetworkType(ctx)) {
+    return when (val type = checkNetworkType(ctx)) {
         1 -> "WIFI"
-        2 -> "4G"
+        2 -> "2G"
         3 -> "3G"
-        4 -> "2G"
-        else -> "未知"
+        4 -> "4G"
+        5 -> "5G"
+        else -> "未知-${type}"
     }
 }
 
@@ -159,8 +177,8 @@ fun getMacAddress(context: Context): String {
         if (info == null) {
             return mac
         }
-        if (hasPermission(context,Manifest.permission.ACCESS_FINE_LOCATION)){
-            @SuppressLint("HardwareIds","MissingPermission")
+        if (hasPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            @SuppressLint("HardwareIds", "MissingPermission")
             if (info.macAddress.isNullOrEmpty()) {
                 return mac
             }

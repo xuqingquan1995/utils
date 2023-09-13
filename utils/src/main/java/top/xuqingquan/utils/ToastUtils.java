@@ -12,10 +12,12 @@ import java.lang.reflect.Field;
 
 /**
  * 单例Toast工具类
- *
- * 1.解决toast排队的问题
- * 2.修复Toast在android 7.1手机上的BadTokenException
- * 3.兼容位置、时长、stringId
+ * <p>
+ * 1.解决toast排队的问题 <br></br>
+ * 2.修复Toast在android 7.1手机上的BadTokenException <br></br>
+ * 3.兼容位置、时长、stringId <br></br>
+ * </p>
+ * @noinspection unused
  */
 public class ToastUtils {
 
@@ -90,7 +92,7 @@ public class ToastUtils {
     /**
      * show Toast 默认短时长 {@link Toast#LENGTH_SHORT}
      *
-     * @param context Context
+     * @param context  Context
      * @param stringId 内容id
      */
     public static void show(Context context, int stringId) {
@@ -100,8 +102,8 @@ public class ToastUtils {
     /**
      * show Toast 可选时长
      *
-     * @param context Context
-     * @param message 内容
+     * @param context  Context
+     * @param message  内容
      * @param duration {@link Toast#LENGTH_SHORT},{@link Toast#LENGTH_LONG}
      */
     public static void show(Context context, String message, int duration) {
@@ -114,8 +116,8 @@ public class ToastUtils {
     /**
      * show Toast 可选时长
      *
-     * @param context Context
-     * @param message 内容
+     * @param context  Context
+     * @param message  内容
      * @param duration {@link Toast#LENGTH_SHORT},{@link Toast#LENGTH_LONG}
      */
     public static void show(Context context, CharSequence message, int duration) {
@@ -128,7 +130,7 @@ public class ToastUtils {
     /**
      * show Toast 可选时长
      *
-     * @param context Context
+     * @param context  Context
      * @param stringId 内容id
      * @param duration {@link Toast#LENGTH_SHORT},{@link Toast#LENGTH_LONG}
      */
@@ -142,8 +144,8 @@ public class ToastUtils {
     /**
      * show Toast 可选位置
      *
-     * @param context Context
-     * @param message 内容
+     * @param context  Context
+     * @param message  内容
      * @param duration {@link Toast#LENGTH_SHORT},{@link Toast#LENGTH_LONG}
      */
     public static void show(Context context, String message, int gravity, int duration) {
@@ -163,7 +165,7 @@ public class ToastUtils {
     private static void hook(Toast toast) {
         try {
             Object tn = mFieldTN.get(toast);
-            Handler preHandler = (Handler)mFieldTNHandler.get(tn);
+            Handler preHandler = (Handler) mFieldTNHandler.get(tn);
             mFieldTNHandler.set(tn, new FiexHandler(preHandler));
         } catch (Exception e) {
             e.printStackTrace();
@@ -172,7 +174,6 @@ public class ToastUtils {
 
     /**
      * 7.1手机上的BadTokenException 相关处理
-     *
      */
     private static class FiexHandler extends Handler {
         private final Handler impl;

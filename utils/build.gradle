@@ -3,13 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'maven-publish'
 
 android {
-    compileSdkVersion 33
-    buildToolsVersion "31.0.0"
+    namespace 'top.xuqingquan.utils'
+    compileSdk 34
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 33
+        minSdk 21
+        targetSdk 34
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-        flavorDimensions 'default'
         resourcePrefix "scaffold_"
     }
     buildTypes {
@@ -34,7 +33,6 @@ android {
         abortOnError false
         checkReleaseBuilds false
     }
-    namespace 'top.xuqingquan.utils'
 }
 
 dependencies {
