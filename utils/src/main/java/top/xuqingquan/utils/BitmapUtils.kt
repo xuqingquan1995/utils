@@ -16,9 +16,9 @@ import java.io.FileOutputStream
 /**
  * 将视图保存成文件
  */
-fun saveView2File(view: View?): String? {
+fun saveView2File(view: View?,outDir: File? = null, ext: String = "png", quality: Int = 100,recycle:Boolean = true): String? {
     return view2Bitmap(view)?.let {
-        bitmap2File(view?.context, it)
+        bitmap2File(view?.context, it, outDir, ext, quality, recycle)
     }?.absolutePath
 }
 
@@ -47,9 +47,10 @@ fun view2Bitmap(view: View?): Bitmap? {
  * @param outDir 要保存的路径
  * @param ext 要保存的文件后缀
  * @param quality 压缩率
+ * @param recycle 是否回收bitmap
  */
 fun bitmap2File(
-    context: Context?, bmp: Bitmap, outDir: File? = null, ext: String = "png", quality: Int = 100
+    context: Context?, bmp: Bitmap, outDir: File? = null, ext: String = "png", quality: Int = 100,recycle:Boolean = true
 ): File? {
     if (context == null) {
         return null
@@ -93,7 +94,9 @@ fun bitmap2File(
     try {
         out!!.flush()
         out.close()
-        bmp.recycle()
+        if (recycle) {
+            bmp.recycle()
+        }
     } catch (e: Throwable) {
         e.printStackTrace()
     }
