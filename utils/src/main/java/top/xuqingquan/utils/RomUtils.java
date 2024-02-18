@@ -33,7 +33,8 @@ import java.util.regex.Pattern;
 @SuppressLint("PrivateApi")
 public final class RomUtils {
 
-    private static final String[] ROM_HUAWEI = {"huawei", "honor"};
+    private static final String[] ROM_HUAWEI = {"huawei"};
+    private static final String[] ROM_HONOR = {"honor"};
     private static final String[] ROM_VIVO = {"vivo"};
     private static final String[] ROM_XIAOMI = {"xiaomi"};
     private static final String[] ROM_OPPO = {"oppo"};
@@ -56,6 +57,7 @@ public final class RomUtils {
     private static final String[] ROM_MOTOROLA = {"motorola"};
     private static final String[] ROM_ESSENTIAL = {"essential"};
 
+    private static final String VERSION_PROPERTY_HONOR = "ro.build.version.magic";
     private static final String VERSION_PROPERTY_HUAWEI = "ro.build.version.emui";
     private static final String VERSION_PROPERTY_VIVO = "ro.vivo.os.build.display.id";
     private static final String VERSION_PROPERTY_XIAOMI = "ro.build.version.incremental";
@@ -81,6 +83,15 @@ public final class RomUtils {
      */
     public static boolean isHuawei() {
         return ROM_HUAWEI[0].equals(getRomInfo().name);
+    }
+
+    /**
+     * Return whether the rom is made by honor.
+     *
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isHonor() {
+        return ROM_HONOR[0].equals(getRomInfo().name);
     }
 
     /**
@@ -284,6 +295,17 @@ public final class RomUtils {
         bean = new RomInfo();
         final String brand = getBrand();
         final String manufacturer = getManufacturer();
+        if (isRightRom(brand, manufacturer, ROM_HONOR)) {
+            bean.name = ROM_HONOR[0];
+            String version = getRomVersion(VERSION_PROPERTY_HONOR);
+            String[] temp = version.split("_");
+            if (temp.length > 1) {
+                bean.version = temp[1];
+            } else {
+                bean.version = version;
+            }
+            return bean;
+        }
         if (isRightRom(brand, manufacturer, ROM_HUAWEI)) {
             bean.name = ROM_HUAWEI[0];
             String version = getRomVersion(VERSION_PROPERTY_HUAWEI);
