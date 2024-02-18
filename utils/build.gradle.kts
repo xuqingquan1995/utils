@@ -44,7 +44,7 @@ android {
 dependencies {
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.exifinterface:exifinterface:1.3.6")
+    implementation("androidx.exifinterface:exifinterface:1.3.7")
     //test
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -59,7 +59,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "top.xuqingquan"
                 artifactId = "utils"
-                version = "3.2.0"
+                version = "3.2.1"
             }
         }
     }
