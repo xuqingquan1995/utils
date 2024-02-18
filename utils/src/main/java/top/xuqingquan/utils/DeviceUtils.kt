@@ -16,13 +16,14 @@ import androidx.core.content.ContextCompat
 /**
  * @author 许清泉 on 2019-04-29 23:28
  */
-fun getScreenSize(context: Context):Point{
-    val windowManager = ContextCompat.getSystemService(context, WindowManager::class.java)?:return Point(0,0)
+fun getScreenSize(context: Context): Point {
+    val windowManager =
+        ContextCompat.getSystemService(context, WindowManager::class.java) ?: return Point(0, 0)
     return if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
         val metrics = windowManager.currentWindowMetrics
         val bounds = metrics.bounds
-        Point(bounds.width(),bounds.height())
-    }else{
+        Point(bounds.width(), bounds.height())
+    } else {
         val display = windowManager.defaultDisplay
         val out = Point()
         display.getRealSize(out)
@@ -73,6 +74,13 @@ fun getIMEI(context: Context): String? {
     }
 }
 
+/**
+ * 不同的设备可能会产生相同的ANDROID_ID：9774d56d682e549c；有些设备返回的值为null;
+ */
 fun getAndroidID(context: Context): String {
-    return Settings.System.getString(context.contentResolver, Settings.Secure.ANDROID_ID) ?: ""
+    var id = Settings.System.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+    if (id == null || id == "9774d56d682e549c") {
+        id = ""
+    }
+    return id
 }

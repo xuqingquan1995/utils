@@ -13,6 +13,8 @@ dependencyResolutionManagement {
         maven("https://maven.aliyun.com/repository/public")
         maven("https://maven.aliyun.com/repository/google")
         maven("https://jitpack.io")
+        maven("https://developer.huawei.com/repo")
+        maven("https://developer.hihonor.com/repo")
         google()
         mavenCentral()
     }
@@ -20,4 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "utils"
 include(":utils")
 //include ':app'
-//include ':demo'
+//include (":demo")
