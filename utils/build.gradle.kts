@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "top.xuqingquan.utils"
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         minSdk = 21
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -59,7 +59,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "top.xuqingquan"
                 artifactId = "utils"
-                version = "3.2.2"
+                version = "3.2.3"
             }
         }
     }

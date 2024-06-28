@@ -56,7 +56,7 @@ fun getVersionName(context: Context): String {
                 0
             )
 
-        packageInfo.versionName
+        packageInfo.versionName ?:"0.0.0.0"
     } catch (ex: Throwable) {
         Timber.w("getVersionName error")
         try {

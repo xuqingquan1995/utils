@@ -19,7 +19,7 @@ fun doBlur(sentBitmap: Bitmap, mRradius: Int, canReuseInBitmap: Boolean): Bitmap
     val bitmap: Bitmap = if (canReuseInBitmap) {
         sentBitmap
     } else {
-        sentBitmap.copy(sentBitmap.config, true)
+        sentBitmap.copy(sentBitmap.config?:Bitmap.Config.ARGB_8888, true)
     }
     if (radius < 1) {
         radius = 1
