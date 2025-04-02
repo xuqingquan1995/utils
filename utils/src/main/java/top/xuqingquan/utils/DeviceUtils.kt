@@ -54,11 +54,16 @@ fun getScreenWidth(context: Context): Int {
 /**
  * 获取IMEI
  */
+var imeiCache: String? = null
+
 @Suppress("DEPRECATION")
 @SuppressLint("HardwareIds")
 @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
-fun getIMEI(context: Context): String? {
-    return try {
+fun getIMEI(context: Context, readCache: Boolean = true): String? {
+    if (readCache && imeiCache != null) {
+        return imeiCache
+    }
+    imeiCache = try {
         if (hasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
             val tel = ContextCompat.getSystemService(context, TelephonyManager::class.java)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -69,18 +74,24 @@ fun getIMEI(context: Context): String? {
         } else {
             null
         }
-    } catch (t: Throwable) {
+    } catch (_: Throwable) {
         null
     }
+    return imeiCache
 }
 
 /**
  * 不同的设备可能会产生相同的ANDROID_ID：9774d56d682e549c；有些设备返回的值为null;
  */
-fun getAndroidID(context: Context): String {
+var androidIDCache = ""
+fun getAndroidID(context: Context, readCache: Boolean = true): String {
+    if (readCache && androidIDCache.isNotEmpty()) {
+        return androidIDCache
+    }
     var id = Settings.System.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
     if (id == null || id == "9774d56d682e549c") {
         id = ""
     }
-    return id
+    androidIDCache = id
+    return androidIDCache
 }
