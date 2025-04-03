@@ -59,7 +59,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "top.xuqingquan"
                 artifactId = "utils"
-                version = "3.2.5"
+                version = "3.2.6"
             }
         }
     }
