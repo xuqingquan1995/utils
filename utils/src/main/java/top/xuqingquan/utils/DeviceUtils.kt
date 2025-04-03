@@ -54,6 +54,10 @@ fun getScreenWidth(context: Context): Int {
 /**
  * 获取IMEI
  */
+fun getIMEI(context: Context): String? {
+    return getIMEI(context,true)
+}
+
 var imeiCache: String? = null
 
 @Suppress("DEPRECATION")
@@ -83,6 +87,10 @@ fun getIMEI(context: Context, readCache: Boolean = true): String? {
 /**
  * 不同的设备可能会产生相同的ANDROID_ID：9774d56d682e549c；有些设备返回的值为null;
  */
+fun getAndroidID(context: Context): String {
+    return getAndroidID(context,true)
+}
+
 var androidIDCache = ""
 fun getAndroidID(context: Context, readCache: Boolean = true): String {
     if (readCache && androidIDCache.isNotEmpty()) {

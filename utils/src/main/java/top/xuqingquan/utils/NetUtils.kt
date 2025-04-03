@@ -28,6 +28,15 @@ import java.util.*
  */
 @Suppress("DEPRECATION")
 fun checkNetworkType(ctx: Context): Int {
+    return checkNetworkType(ctx, true)
+}
+
+var checkNetworkTypeCache = -1
+
+fun checkNetworkType(ctx: Context, readCache: Boolean = true): Int {
+    if (readCache && checkNetworkTypeCache != -1) {
+        return checkNetworkTypeCache
+    }
     val context = ctx.applicationContext
     val netType = 0
     //连接管理对象
@@ -35,7 +44,7 @@ fun checkNetworkType(ctx: Context): Int {
         ContextCompat.getSystemService(context, ConnectivityManager::class.java) ?: return netType
     //获取NetworkInfo对象
     val networkInfo = manager.activeNetworkInfo ?: return netType
-    return when (networkInfo.type) {
+    checkNetworkTypeCache = when (networkInfo.type) {
         ConnectivityManager.TYPE_WIFI, ConnectivityManager.TYPE_WIMAX, ConnectivityManager.TYPE_ETHERNET -> 1
         ConnectivityManager.TYPE_MOBILE -> when (networkInfo.subtype) {
             TelephonyManager.NETWORK_TYPE_GPRS, // 2G
@@ -67,6 +76,11 @@ fun checkNetworkType(ctx: Context): Int {
 
         else -> netType
     }
+    return checkNetworkTypeCache
+}
+
+fun checkNetworkTypeStr(ctx: Context): String {
+    return checkNetworkTypeStr(ctx, true)
 }
 
 var networkTypeStrCache = ""
@@ -84,6 +98,13 @@ fun checkNetworkTypeStr(ctx: Context, readCache: Boolean = true): String {
         else -> "未知-${type}"
     }
     return networkTypeStrCache
+}
+
+fun networkIsConnect(
+    ctx: Context,
+    callback: MutableLiveData<Boolean>? = null
+): Boolean {
+    return networkIsConnect(ctx, callback, true)
 }
 
 var networkIsConnectCache: Boolean? = null
@@ -129,6 +150,10 @@ fun networkIsConnect(
 /**
  * 获取当前ip地址
  */
+fun getIPAddress(useIPv4: Boolean): String {
+    return getIPAddress(useIPv4, true)
+}
+
 const val UNKNOWN_IP_ADDRESS = "0.0.0.0"
 var ipAddressCache = UNKNOWN_IP_ADDRESS
 
@@ -187,8 +212,13 @@ fun getIPAddress(useIPv4: Boolean, readCache: Boolean = true): String {
  * 获取MAC地址
  *
  * @param context
+ * @param readCache
  * @return
  */
+fun getMacAddress(context: Context): String {
+    return getMacAddress(context, true)
+}
+
 const val UNKNOWN_MAC_ADDRESS = "02:00:00:00:00:00"
 var macAddressCache = UNKNOWN_MAC_ADDRESS
 fun getMacAddress(context: Context, readCache: Boolean = true): String {
@@ -278,6 +308,10 @@ fun getMacAddress(context: Context, readCache: Boolean = true): String {
     return macAddressCache
 }
 
+fun getSSID(context: Context): String {
+    return getSSID(context, true)
+}
+
 const val UNKNOWN_SSID = "<unknown ssid>"
 var ssidCache = UNKNOWN_SSID
 fun getSSID(context: Context, readCache: Boolean = true): String {
@@ -290,6 +324,10 @@ fun getSSID(context: Context, readCache: Boolean = true): String {
     return ssidCache
 }
 
+fun hasSim(context: Context): Boolean {
+    return hasSim(context, true)
+}
+
 var hasSimCache: Boolean? = null
 fun hasSim(context: Context, readCache: Boolean = true): Boolean {
     if (readCache && hasSimCache != null) {
@@ -298,6 +336,10 @@ fun hasSim(context: Context, readCache: Boolean = true): Boolean {
     val manager = ContextCompat.getSystemService(context, TelephonyManager::class.java)
     hasSimCache = manager?.simState == TelephonyManager.SIM_STATE_READY
     return hasSimCache!!
+}
+
+fun getCellularOperatorType(context: Context): String {
+    return getCellularOperatorType(context, true)
 }
 
 var cellularOperatorTypeCache = ""
